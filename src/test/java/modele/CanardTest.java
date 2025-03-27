@@ -101,6 +101,32 @@ public class CanardTest {
     // ---------- TESTS METHODES ---------- //
 
     @Test
+    public void testAttaquerCibleNulle() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            canardEau.attaquer(null, 50);
+        });
+    }
+
+    @Test
+    public void testAttaquerSoitMeme() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            canardEau.attaquer(canardEau, 50);
+        });
+    }
+
+    @Test
+    public void testAttaquerNeutre() {
+        canardEau.attaquer(canardGlace, 50);
+        assertEquals(50, canardGlace.getPointsDeVie());
+    }
+
+    @Test
+    public void testAttaquerSuperEfficace() {
+        canardEau.attaquer(canardFeu, 50);
+        assertTrue(canardFeu.estKO());
+    }
+
+    @Test
     public void testSubirDegatsDegatsNegatifs() {
         assertThrows(IllegalArgumentException.class, () -> {
             canardEau.subirDegats(-10);
