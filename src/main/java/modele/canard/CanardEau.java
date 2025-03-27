@@ -1,4 +1,4 @@
-package modele;
+package modele.canard;
 
 import combat.capaciteSpeciale.CapaciteSpecialeEau;
 

@@ -1,4 +1,4 @@
-package modele;
+package modele.canard;
 
 import combat.Statut;
 import combat.capaciteSpeciale.CapaciteSpeciale;

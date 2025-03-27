@@ -1,6 +1,6 @@
 package combat.capaciteSpeciale;
 
-import modele.Canard;
+import modele.canard.Canard;
 
 public interface CapaciteSpeciale {
     void activer(Canard canardCible);

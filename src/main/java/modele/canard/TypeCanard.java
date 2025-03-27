@@ -1,9 +1,10 @@
-package modele;
+package modele.canard;
 
 public enum TypeCanard {
 
     EAU, FEU, GLACE, VENT;
 
+    // Modifier ça pour faire littéralement la table des types ( Matrice )
     public static double getMultiplicateur(TypeCanard attaquant, TypeCanard cible) {
         switch (attaquant) {
             case EAU:

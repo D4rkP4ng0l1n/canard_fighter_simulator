@@ -1,6 +1,6 @@
 package combat.capaciteSpeciale;
 
-import modele.Canard;
+import modele.canard.Canard;
 
 public class CapaciteSpecialeEau implements CapaciteSpeciale {
 

@@ -9,6 +9,12 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import modele.canard.CanardEau;
+import modele.canard.CanardFeu;
+import modele.canard.CanardGlace;
+import modele.canard.CanardVent;
+import modele.canard.TypeCanard;
+
 public class CanardTest {
 
     private CanardEau canardEau;

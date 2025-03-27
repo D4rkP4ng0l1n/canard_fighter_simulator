@@ -1,11 +1,11 @@
-package modele;
+package modele.canard;
 
-import combat.capaciteSpeciale.CapaciteSpecialeFeu;
+import combat.capaciteSpeciale.CapaciteSpecialeGlace;
 
-public class CanardFeu extends Canard {
+public class CanardGlace extends Canard {
 
-    public CanardFeu(String nom, int pv, int pa) {
-        super(nom, TypeCanard.FEU, pv, pa, new CapaciteSpecialeFeu());
+    public CanardGlace(String nom, int pv, int pa) {
+        super(nom, TypeCanard.GLACE, pv, pa, new CapaciteSpecialeGlace());
     }
 
     public void activerCapaciteSpeciale(Canard canardCible) {

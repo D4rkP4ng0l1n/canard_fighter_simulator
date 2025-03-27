@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 
-import modele.Canard;
+import modele.canard.Canard;
 import ui.Menu;
 
 public class App {

@@ -1,8 +1,8 @@
 package combat.capaciteSpeciale;
 
 import combat.Statut;
-import modele.Canard;
-import modele.TypeCanard;
+import modele.canard.Canard;
+import modele.canard.TypeCanard;
 
 public class CapaciteSpecialeFeu implements CapaciteSpeciale {
 

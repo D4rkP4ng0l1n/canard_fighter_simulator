@@ -6,10 +6,10 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import modele.CanardEau;
-import modele.CanardFeu;
-import modele.CanardGlace;
-import modele.CanardVent;
+import modele.canard.CanardEau;
+import modele.canard.CanardFeu;
+import modele.canard.CanardGlace;
+import modele.canard.CanardVent;
 
 public class CapaciteSpecialeTest {
 
