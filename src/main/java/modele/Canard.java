@@ -42,7 +42,15 @@ public abstract class Canard {
         return this.pa;
     }
 
-    // attaquer
+    public void attaquer(Canard autreCanard, int degats) {
+        if (autreCanard == null) {
+            throw new IllegalArgumentException("Il doit y avoir une cible à l'attaque !");
+        }
+        if (autreCanard == this) {
+            throw new IllegalArgumentException("Un canard ne peut pas s'attaquer lui-même !");
+        }
+        autreCanard.subirDegats((int) (degats * TypeCanard.getMultiplicateur(this.type, autreCanard.getType())));
+    }
 
     public void subirDegats(int degats) {
         if (degats < 0) {
@@ -53,5 +61,10 @@ public abstract class Canard {
 
     public boolean estKO() {
         return this.pv <= 0;
+    }
+
+    @Override
+    public String toString() {
+        return this.nom + " (" + this.type + ") : " + this.pv + " PV, " + this.pa + " PA";
     }
 }

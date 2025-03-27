@@ -1,5 +1,6 @@
 package ui;
 
+import java.util.List;
 import java.util.Scanner;
 
 import modele.Canard;
@@ -11,9 +12,34 @@ import modele.TypeCanard;
 
 public class Menu {
 
-    public static Canard creationCanard() {
-        Scanner scanner = new Scanner(System.in);
+    private static Scanner scanner = new Scanner(System.in);
 
+    public static int menuPrincipal() {
+
+        int codeRetour = -1;
+
+        System.out.println(" ---------- MENU PRINCIPAL ---------- ");
+        System.out.println("0. Quitter\n1. Créer un Canard\n2. Afficher la liste de mes Canards");
+        System.out.print(">>> ");
+        String choix = scanner.nextLine();
+
+        switch (choix) {
+            case "0":
+                codeRetour = 0;
+                break;
+            case "1":
+                codeRetour = 1;
+                break;
+            case "2":
+                codeRetour = 2;
+                break;
+            default:
+                codeRetour = -1;
+        }
+        return codeRetour;
+    }
+
+    public static Canard creationCanard() {
         System.out.println(" ---------- CREATION D'UN CANARD ---------- ");
 
         String nom = "";
@@ -54,7 +80,6 @@ public class Menu {
         System.out.println("Votre Canard possède " + pv + " points de vie et " + pa + " points d'attaque.\n");
 
         System.out.println("Création du Canard Terminée !");
-        scanner.close();
 
         switch (typeCanard) {
             case EAU:
@@ -68,6 +93,12 @@ public class Menu {
         }
 
         return (Canard) null;
+    }
 
+    public static void afficherListCanards(List<Canard> canards) {
+        System.out.println(" ---------- LISTE DE MES CANARDS ---------- ");
+        for (Canard canard : canards) {
+            System.out.println(canard);
+        }
     }
 }
