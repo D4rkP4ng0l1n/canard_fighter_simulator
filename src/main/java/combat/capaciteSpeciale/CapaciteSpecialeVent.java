@@ -6,6 +6,6 @@ public class CapaciteSpecialeVent implements CapaciteSpeciale {
 
     @Override
     public void activer(Canard canardCible) {
-        canardCible.subirDegats(40);
+        // TODO Auto-generated method stub
     }
 }

@@ -6,7 +6,7 @@ public class CapaciteSpecialeEau implements CapaciteSpeciale {
 
     @Override
     public void activer(Canard canardCible) {
-        canardCible.soigner(20);
+        // TODO Auto-generated method stub
     }
 
 }
