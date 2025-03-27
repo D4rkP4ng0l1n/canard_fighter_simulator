@@ -43,6 +43,8 @@ public class Menu {
     }
 
     public static Canard creationCanard() {
+        Canard canard = (Canard) null;
+
         System.out.println(" ---------- CREATION D'UN CANARD ---------- ");
 
         String nom = "";
@@ -76,26 +78,26 @@ public class Menu {
             }
         }
 
-        System.out.println("Génération des points de vie du canard...");
-        // Les points de vies sont générés par rapport aux stats d'un Psykokwak lv 50
-        int pv = (int) ((Math.random() * 32) + 125);
-        int pa = 100;
-        System.out.println("Votre Canard possède " + pv + " points de vie et " + pa + " points d'attaque.\n");
-
         System.out.println("Création du Canard Terminée !");
 
         switch (typeCanard) {
             case EAU:
-                return new CanardEau(nom, pv, pa);
+                canard = new CanardEau(nom);
+                break;
             case FEU:
-                return new CanardFeu(nom, pv, pa);
+                canard = new CanardFeu(nom);
+                break;
             case VENT:
-                return new CanardVent(nom, pv, pa);
+                canard = new CanardVent(nom);
+                break;
             case GLACE:
-                return new CanardGlace(nom, pv, pa);
+                canard = new CanardGlace(nom);
+                break;
         }
 
-        return (Canard) null;
+        System.out.println("Votre Canard : \n" + canard.toString());
+
+        return canard;
     }
 
     public static void afficherListCanards(List<Canard> canards) {
