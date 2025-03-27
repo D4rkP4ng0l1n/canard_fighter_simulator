@@ -1,6 +1,6 @@
 package modele;
 
-import combat.CapaciteSpecialeEau;
+import combat.capaciteSpeciale.CapaciteSpecialeEau;
 
 public class CanardEau extends Canard {
 

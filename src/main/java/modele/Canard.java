@@ -1,7 +1,7 @@
 package modele;
 
-import combat.CapaciteSpeciale;
 import combat.Statut;
+import combat.capaciteSpeciale.CapaciteSpeciale;
 
 public abstract class Canard {
 

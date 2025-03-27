@@ -1,6 +1,6 @@
 package modele;
 
-import combat.CapaciteSpecialeVent;
+import combat.capaciteSpeciale.CapaciteSpecialeVent;
 
 public class CanardVent extends Canard {
 
