@@ -8,4 +8,13 @@ public class CanardEau extends Canard {
         super(nom, TypeCanard.EAU, pv, pa, new CapaciteSpecialeEau());
     }
 
+    public void activerCapaciteSpeciale() {
+        if (this.getPointsAttaque() < 15) {
+            throw new IllegalArgumentException(
+                    "Le canard n'a pas assez de points d'attaque pour activer la capacité spéciale !");
+        }
+        this.getCapaciteSpeciale().activer(this);
+        this.setPointsAttaque(this.getPointsAttaque() - 15);
+    }
+
 }

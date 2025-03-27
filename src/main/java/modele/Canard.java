@@ -45,12 +45,23 @@ public abstract class Canard {
         return this.pa;
     }
 
+    public CapaciteSpeciale getCapaciteSpeciale() {
+        return this.capaciteSpeciale;
+    }
+
     public Statut getStatut() {
         return this.statut;
     }
 
     public void setStatut(Statut statut) {
         this.statut = statut;
+    }
+
+    public void setPointsAttaque(int pa) {
+        if (pa < 0) {
+            throw new IllegalArgumentException("Les points d'attaque du canard ne peuvent pas être négatifs !");
+        }
+        this.pa = pa;
     }
 
     public void attaquer(Canard autreCanard, int degats) {
@@ -68,6 +79,13 @@ public abstract class Canard {
             throw new IllegalArgumentException("Les dégâts subis ne peuvent pas être négatifs !");
         }
         this.pv -= degats;
+    }
+
+    public void soigner(int soin) {
+        if (soin < 0) {
+            throw new IllegalArgumentException("Les soins ne peuvent pas être négatifs !");
+        }
+        this.pv += soin;
     }
 
     public boolean estKO() {
