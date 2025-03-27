@@ -24,18 +24,31 @@ public abstract class Canard {
     }
 
     public String getNom() {
-        return nom;
+        return this.nom;
     }
 
     public TypeCanard getType() {
-        return type;
+        return this.type;
     }
 
     public int getPointsDeVie() {
-        return pv;
+        return this.pv;
     }
 
     public int getPointsAttaque() {
-        return pa;
+        return this.pa;
+    }
+
+    // attaquer
+
+    public void subirDegats(int degats) {
+        if (degats < 0) {
+            throw new IllegalArgumentException("Les dégâts subis ne peuvent pas être négatifs !");
+        }
+        this.pv -= degats;
+    }
+
+    public boolean estKO() {
+        return this.pv <= 0;
     }
 }

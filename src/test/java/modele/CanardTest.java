@@ -1,7 +1,9 @@
 package modele;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,6 +31,8 @@ public class CanardTest {
         canardVent = null;
         canardGlace = null;
     }
+
+    // ---------- TEST CONSTRUCTEUR ---------- //
 
     @Test
     public void testCreationCanardNomKO() {
@@ -60,6 +64,8 @@ public class CanardTest {
         });
     }
 
+    // ---------- TESTS GETTERS ---------- //
+
     @Test
     public void testGetNom() {
         assertEquals("Eau", canardEau.getNom());
@@ -90,5 +96,27 @@ public class CanardTest {
         assertEquals(50, canardFeu.getPointsAttaque());
         assertEquals(50, canardVent.getPointsAttaque());
         assertEquals(50, canardGlace.getPointsAttaque());
+    }
+
+    // ---------- TESTS METHODES ---------- //
+
+    @Test
+    public void testSubirDegatsDegatsNegatifs() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            canardEau.subirDegats(-10);
+        });
+    }
+
+    @Test
+    public void testSubirDegats() {
+        canardEau.subirDegats(50);
+        assertEquals(50, canardEau.getPointsDeVie());
+    }
+
+    @Test
+    public void testEstKO() {
+        assertFalse(canardEau.estKO());
+        canardEau.subirDegats(100);
+        assertTrue(canardEau.estKO());
     }
 }
