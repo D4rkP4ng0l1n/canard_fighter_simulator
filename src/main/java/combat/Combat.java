@@ -1,5 +1,6 @@
 package combat;
 
 public class Combat {
-    // TODO Auto-generated method stub
+
+    public static final float COEFF_EQUILIBRAGE = 0.1f;
 }
