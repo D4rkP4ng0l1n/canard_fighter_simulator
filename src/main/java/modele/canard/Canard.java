@@ -3,8 +3,11 @@ package modele.canard;
 import java.util.ArrayList;
 import java.util.List;
 
+import combat.Combat;
 import combat.Statut;
 import combat.capacite.Capacite;
+import combat.capacite.Effet;
+import combat.capaciteSpeciale.CapaciteSpeciale;
 
 /*
  * Classe abstraite représentant un canard
@@ -29,14 +32,15 @@ public abstract class Canard {
     private int energie;
 
     protected List<Capacite> capacites;
-    protected boolean capaciteSpeciale; // True si la capacité spéciale du canard est disponible
+    protected CapaciteSpeciale capaciteSpeciale;
+    protected boolean capaciteSpecialeDisponible; // True si la capacité spéciale du canard est disponible
 
     // ---------- CONSTRUCTEURS ---------- //
 
     /*
      * Constructeur de base d'un canard
      */
-    public Canard(String nom, TypeCanard type) {
+    public Canard(String nom, TypeCanard type, CapaciteSpeciale capaciteSpeciale) {
         this.nom = nom;
         this.type = type;
 
@@ -48,17 +52,19 @@ public abstract class Canard {
 
         this.stats = new ArrayList<>(3);
         this.initStats();
-        this.statsEnCombat = stats;
+        this.statsEnCombat = new ArrayList<>(stats);
         this.energie = MAX_ENERGIE;
 
         this.capacites = new ArrayList<>(4);
-        this.capaciteSpeciale = true;
+        this.capaciteSpeciale = capaciteSpeciale;
+        this.capaciteSpecialeDisponible = true;
+
     }
 
     /*
      * Constructeur d'un canard avec un niveau spécifié
      */
-    public Canard(String nom, TypeCanard type, int niveau) {
+    public Canard(String nom, TypeCanard type, CapaciteSpeciale capaciteSpeciale, int niveau) {
         if (niveau > NIVEAU_MAX) {
             throw new IllegalArgumentException(
                     "Le niveau du canard ne peut pas dépasser le niveau " + NIVEAU_MAX + " !");
@@ -76,17 +82,18 @@ public abstract class Canard {
         this.stats = new ArrayList<>(3);
         this.initStats();
         this.calculerStats();
-        this.statsEnCombat = stats;
+        this.statsEnCombat = new ArrayList<>(stats);
         this.energie = MAX_ENERGIE;
 
         this.capacites = new ArrayList<>(4);
-        this.capaciteSpeciale = true;
+        this.capaciteSpeciale = capaciteSpeciale;
+        this.capaciteSpecialeDisponible = true;
     }
 
     /*
      * Constructeur d'un canard avec des statistiques spécifiées
      */
-    public Canard(String nom, TypeCanard type, int pv, int attaque, int vitesse) {
+    public Canard(String nom, TypeCanard type, CapaciteSpeciale capaciteSpeciale, int pv, int attaque, int vitesse) {
         this.nom = nom;
         this.type = type;
 
@@ -100,11 +107,12 @@ public abstract class Canard {
         this.stats.add(pv);
         this.stats.add(attaque);
         this.stats.add(vitesse);
-        this.statsEnCombat = stats;
+        this.statsEnCombat = new ArrayList<>(stats);
         this.energie = MAX_ENERGIE;
 
         this.capacites = new ArrayList<>(4);
-        this.capaciteSpeciale = true;
+        this.capaciteSpeciale = capaciteSpeciale;
+        this.capaciteSpecialeDisponible = true;
     }
 
     // ---------- GETTERS ---------- //
@@ -126,19 +134,50 @@ public abstract class Canard {
     /*
      * Retourne le statut du canard
      */
+    public Statut getStatut() {
+        return this.statut;
+    }
+
+    /*
+     * Retourne les points de vie du canard
+     */
     public int getPointsDeVie() {
         return this.stats.get(0);
     }
 
     /*
-     * Retourne le niveau du canard
+     * Retourne les points de vie du canard en combat
+     */
+    public int getPointsDeVieCombat() {
+        return this.statsEnCombat.get(0);
+    }
+
+    /*
+     * Retourne les points d'attaque du canard
      */
     public int getPointsAttaque() {
         return this.stats.get(1);
     }
 
+    /*
+     * Retourne les points d'attaque du canard en combat
+     */
+    public int getPointsAttaqueCombat() {
+        return this.statsEnCombat.get(1);
+    }
+
+    /*
+     * Retourne la vitesse du canard
+     */
     public int getVitesse() {
         return this.stats.get(2);
+    }
+
+    /*
+     * Retourne la vitesse du canard en combat
+     */
+    public int getVitesseCombat() {
+        return this.statsEnCombat.get(2);
     }
 
     /*
@@ -153,6 +192,13 @@ public abstract class Canard {
      */
     public List<Capacite> getCapacites() {
         return this.capacites;
+    }
+
+    /*
+     * Retourne true si la capacite speciale du canard est disponible, false sinon
+     */
+    public boolean capaciteSpecialeDisponible() {
+        return this.capaciteSpecialeDisponible;
     }
 
     // ---------- SETTERS ---------- //
@@ -173,7 +219,7 @@ public abstract class Canard {
      */
     public void attaquer(Canard autreCanard, Capacite capacite) {
         // Calcul des dégâts
-        double degats = (this.getPointsAttaque() * 0.2) * capacite.getDegats()
+        double degats = (this.getPointsAttaque() * Combat.COEFF_EQUILIBRAGE) * capacite.getDegats()
                 * TypeCanard.getMultiplicateur(capacite.getType(), autreCanard.getType());
         // Infliger les degats
         autreCanard.subirDegats((int) degats);
@@ -183,9 +229,54 @@ public abstract class Canard {
      * Méthode permettant d'infliger des degats a un canard
      */
     public void subirDegats(int degats) {
-        this.stats.set(0, this.stats.get(0) - degats);
-        if (this.stats.get(0) < 0)
-            this.stats.set(0, 0);
+        this.statsEnCombat.set(0, this.statsEnCombat.get(0) - degats);
+        if (this.statsEnCombat.get(0) < 0)
+            this.statsEnCombat.set(0, 0);
+    }
+
+    /*
+     * Méthode permettant de soigner un canard
+     */
+    public void soigner(int soin) {
+        this.statsEnCombat.set(0, this.statsEnCombat.get(0) + soin);
+        if (this.statsEnCombat.get(0) > this.stats.get(0))
+            this.statsEnCombat.set(0, this.stats.get(0));
+    }
+
+    /*
+     * Applique un effet sur le canard
+     */
+    public void appliquerEffet(Effet effet, double montantEffet) {
+        switch (effet) {
+            case CRIT:
+                break;
+            case SOIN:
+                break;
+            case SOIN_STATUT:
+                break;
+            case BOOST_ATTAQUE:
+                break;
+            case BOOST_VITESSE:
+                break;
+            default:
+                break;
+        }
+    }
+
+    /*
+     * Méthode permettant d'appliquer un statut sur le canard
+     */
+    public void appliquerEffetStatut(Statut statut) {
+        if (this.statut == Statut.NEUTRE) {
+            this.statut = statut;
+        }
+    }
+
+    /*
+     * Méthode permettant de retirer un statut du canard
+     */
+    public void retirerStatut() {
+        this.statut = Statut.NEUTRE;
     }
 
     /*
@@ -194,7 +285,7 @@ public abstract class Canard {
      * @return true si le canard est KO, false sinon
      */
     public boolean estKO() {
-        return this.stats.get(0) <= 0;
+        return this.statsEnCombat.get(0) <= 0;
     }
 
     // ---------- METHODES ABSTRAITES ---------- //
@@ -209,6 +300,11 @@ public abstract class Canard {
      * Méthode permettant de calculer les stats d'un canard après monté d'un niveau
      */
     protected abstract void calculerStats();
+
+    /*
+     * Méthode permettant d'utiliser la capacité spéciale du canard
+     */
+    public abstract void utiliserCapaciteSpeciale(Canard canardCible);
 
     @Override
     public String toString() {

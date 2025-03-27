@@ -1,6 +1,7 @@
 package modele.canard;
 
 import combat.capacite.Capacite;
+import combat.capaciteSpeciale.CapaciteSpecialeGlace;
 
 public class CanardGlace extends Canard {
 
@@ -27,7 +28,7 @@ public class CanardGlace extends Canard {
      * Constructeur d'un canard de type GLACE
      */
     public CanardGlace(String nom) {
-        super(nom, TypeCanard.GLACE);
+        super(nom, TypeCanard.GLACE, new CapaciteSpecialeGlace());
         this.apprendreCapacite(Capacite.GIVRE_CANARD);
     }
 
@@ -35,7 +36,7 @@ public class CanardGlace extends Canard {
      * Constructeur d'un canard de type GLACE avec un niveau spécifié
      */
     public CanardGlace(String nom, int niveau) {
-        super(nom, TypeCanard.GLACE, niveau);
+        super(nom, TypeCanard.GLACE, new CapaciteSpecialeGlace(), niveau);
         this.apprendreCapacite(Capacite.GIVRE_CANARD);
     }
 
@@ -43,7 +44,7 @@ public class CanardGlace extends Canard {
      * Constructeur d'un canard de type GLACE avec des statistiques spécifiées
      */
     public CanardGlace(String nom, int pv, int attaque, int vitesse) {
-        super(nom, TypeCanard.GLACE, pv, attaque, vitesse);
+        super(nom, TypeCanard.GLACE, new CapaciteSpecialeGlace(), pv, attaque, vitesse);
         this.apprendreCapacite(Capacite.GIVRE_CANARD);
     }
 
@@ -70,6 +71,16 @@ public class CanardGlace extends Canard {
         this.stats.set(2,
                 this.stats.get(2) + AJOUT_VITESSE_MIN
                         + (int) (Math.random() * ((AJOUT_VITESSE_MAX - AJOUT_VITESSE_MIN) + 1)));
+    }
+
+    /*
+     * Méthode permettant d'utiliser la capacité spéciale du canard
+     */
+    public void utiliserCapaciteSpeciale(Canard canardCible) {
+        if (this.capaciteSpecialeDisponible) {
+            this.capaciteSpeciale.activer(this, canardCible);
+        }
+        this.capaciteSpecialeDisponible = false;
     }
 
 }

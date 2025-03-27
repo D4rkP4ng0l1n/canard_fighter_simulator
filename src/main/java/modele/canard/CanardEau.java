@@ -1,6 +1,7 @@
 package modele.canard;
 
 import combat.capacite.Capacite;
+import combat.capaciteSpeciale.CapaciteSpecialeEau;
 
 public class CanardEau extends Canard {
 
@@ -27,7 +28,7 @@ public class CanardEau extends Canard {
      * Constructeur d'un canard de type EAU
      */
     public CanardEau(String nom) {
-        super(nom, TypeCanard.EAU);
+        super(nom, TypeCanard.EAU, new CapaciteSpecialeEau());
         this.apprendreCapacite(Capacite.GOUTTELETTE);
     }
 
@@ -35,7 +36,7 @@ public class CanardEau extends Canard {
      * Constructeur d'un canard de type EAU avec un niveau spécifié
      */
     public CanardEau(String nom, int niveau) {
-        super(nom, TypeCanard.EAU, niveau);
+        super(nom, TypeCanard.EAU, new CapaciteSpecialeEau(), niveau);
         this.apprendreCapacite(Capacite.GOUTTELETTE);
     }
 
@@ -43,7 +44,7 @@ public class CanardEau extends Canard {
      * Constructeur d'un canard de type EAU avec des statistiques spécifiées
      */
     public CanardEau(String nom, int pv, int attaque, int vitesse) {
-        super(nom, TypeCanard.EAU, pv, attaque, vitesse);
+        super(nom, TypeCanard.EAU, new CapaciteSpecialeEau(), pv, attaque, vitesse);
         this.apprendreCapacite(Capacite.GOUTTELETTE);
     }
 
@@ -70,6 +71,13 @@ public class CanardEau extends Canard {
         this.stats.set(2,
                 this.stats.get(2) + AJOUT_VITESSE_MIN
                         + (int) (Math.random() * ((AJOUT_VITESSE_MAX - AJOUT_VITESSE_MIN) + 1)));
+    }
+
+    public void utiliserCapaciteSpeciale(Canard canardCible) {
+        if (this.capaciteSpecialeDisponible) {
+            this.capaciteSpeciale.activer(this, canardCible);
+        }
+        this.capaciteSpecialeDisponible = false;
     }
 
 }

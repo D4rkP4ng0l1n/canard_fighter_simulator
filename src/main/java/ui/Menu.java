@@ -19,7 +19,7 @@ public class Menu {
         int codeRetour = -1;
 
         System.out.println(" ---------- MENU PRINCIPAL ---------- ");
-        System.out.println("0. Quitter\n1. Créer un Canard\n2. Afficher la liste de mes Canards\n3. Simuler un Combat");
+        System.out.println("0. Quitter\n1. Créer un Canard\n2. Afficher la liste de mes Canards\n3. Lancer un Combat");
         System.out.print(">>> ");
         String choix = scanner.nextLine();
 

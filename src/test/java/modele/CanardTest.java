@@ -8,6 +8,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import combat.Combat;
 import combat.capacite.Capacite;
 import modele.canard.Canard;
 import modele.canard.CanardEau;
@@ -18,10 +19,10 @@ import modele.canard.TypeCanard;
 
 public class CanardTest {
 
-    private CanardEau canardEau;
-    private CanardFeu canardFeu;
-    private CanardVent canardVent;
-    private CanardGlace canardGlace;
+    private Canard canardEau;
+    private Canard canardFeu;
+    private Canard canardVent;
+    private Canard canardGlace;
 
     @BeforeEach
     public void setUp() {
@@ -96,16 +97,20 @@ public class CanardTest {
     public void testAttaquerNeutre() {
         int initialPV = canardFeu.getPointsDeVie();
         canardVent.attaquer(canardFeu, Capacite.VENT_TEST);
-        assertEquals(initialPV - canardVent.getPointsAttaque() * 0.2 * Capacite.VENT_TEST.getDegats(),
-                canardFeu.getPointsDeVie());
+        assertEquals(
+                initialPV - canardVent.getPointsAttaqueCombat() * Combat.COEFF_EQUILIBRAGE
+                        * Capacite.VENT_TEST.getDegats(),
+                canardFeu.getPointsDeVieCombat());
     }
 
     @Test
     public void testAttaquerSuperEfficace() {
         int initialPV = canardFeu.getPointsDeVie();
         canardEau.attaquer(canardFeu, Capacite.EAU_TEST);
-        assertTrue(initialPV - canardEau.getPointsAttaque() * 0.2 * Capacite.EAU_TEST.getDegats() * 1.5 <= canardFeu
-                .getPointsDeVie());
+        assertTrue(
+                initialPV - canardEau.getPointsAttaqueCombat() * Combat.COEFF_EQUILIBRAGE
+                        * Capacite.EAU_TEST.getDegats() * 1.5 <= canardFeu
+                                .getPointsDeVieCombat());
 
     }
 
@@ -113,8 +118,10 @@ public class CanardTest {
     public void testAttaquerPasTresEfficace() {
         int initialPV = canardFeu.getPointsDeVie();
         canardGlace.attaquer(canardFeu, Capacite.GLACE_TEST);
-        assertEquals(initialPV - canardGlace.getPointsAttaque() * 0.2 * Capacite.GLACE_TEST.getDegats() * 0.5,
-                canardFeu.getPointsDeVie());
+        assertEquals(
+                initialPV - canardGlace.getPointsAttaqueCombat() * Combat.COEFF_EQUILIBRAGE
+                        * Capacite.GLACE_TEST.getDegats() * 0.5,
+                canardFeu.getPointsDeVieCombat());
 
     }
 
