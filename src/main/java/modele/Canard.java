@@ -1,6 +1,7 @@
 package modele;
 
 import combat.CapaciteSpeciale;
+import combat.Statut;
 
 public abstract class Canard {
 
@@ -8,6 +9,7 @@ public abstract class Canard {
     private TypeCanard type;
     private int pv, pa;
     private CapaciteSpeciale capaciteSpeciale;
+    private Statut statut;
 
     protected Canard(String nom, TypeCanard type, int pv, int pa, CapaciteSpeciale capaciteSpeciale) {
         if (nom == null || nom.isEmpty()) {
@@ -24,6 +26,7 @@ public abstract class Canard {
         this.pv = pv;
         this.pa = pa;
         this.capaciteSpeciale = capaciteSpeciale;
+        this.statut = Statut.NEUTRE;
     }
 
     public String getNom() {
@@ -40,6 +43,14 @@ public abstract class Canard {
 
     public int getPointsAttaque() {
         return this.pa;
+    }
+
+    public Statut getStatut() {
+        return this.statut;
+    }
+
+    public void setStatut(Statut statut) {
+        this.statut = statut;
     }
 
     public void attaquer(Canard autreCanard, int degats) {
