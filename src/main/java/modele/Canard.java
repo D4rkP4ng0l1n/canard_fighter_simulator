@@ -1,13 +1,15 @@
 package modele;
 
+import combat.CapaciteSpeciale;
+
 public abstract class Canard {
 
     private String nom;
     private TypeCanard type;
     private int pv, pa;
-    // Capacité spéciale
+    private CapaciteSpeciale capaciteSpeciale;
 
-    protected Canard(String nom, TypeCanard type, int pv, int pa) {
+    protected Canard(String nom, TypeCanard type, int pv, int pa, CapaciteSpeciale capaciteSpeciale) {
         if (nom == null || nom.isEmpty()) {
             throw new IllegalArgumentException("Le nom du canard ne peut pas être vide !");
         }
@@ -21,6 +23,7 @@ public abstract class Canard {
         this.type = type;
         this.pv = pv;
         this.pa = pa;
+        this.capaciteSpeciale = capaciteSpeciale;
     }
 
     public String getNom() {
