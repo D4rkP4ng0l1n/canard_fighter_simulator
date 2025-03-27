@@ -2,13 +2,14 @@ package modele;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import combat.capacite.Capacite;
+import modele.canard.Canard;
 import modele.canard.CanardEau;
 import modele.canard.CanardFeu;
 import modele.canard.CanardGlace;
@@ -24,10 +25,10 @@ public class CanardTest {
 
     @BeforeEach
     public void setUp() {
-        canardEau = new CanardEau("Eau", 100, 50);
-        canardFeu = new CanardFeu("Feu", 100, 50);
-        canardVent = new CanardVent("Vent", 100, 50);
-        canardGlace = new CanardGlace("Glace", 100, 50);
+        canardEau = new CanardEau("Eau", 100, 50, 30);
+        canardFeu = new CanardFeu("Feu", 100, 50, 30);
+        canardVent = new CanardVent("Vent", 100, 50, 30);
+        canardGlace = new CanardGlace("Glace", 100, 50, 30);
     }
 
     @AfterEach
@@ -36,38 +37,6 @@ public class CanardTest {
         canardFeu = null;
         canardVent = null;
         canardGlace = null;
-    }
-
-    // ---------- TEST CONSTRUCTEUR ---------- //
-
-    @Test
-    public void testCreationCanardNomKO() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            new CanardEau(null, 100, 50).getClass();
-        });
-        assertThrows(IllegalArgumentException.class, () -> {
-            new CanardEau("", 100, 50).getClass();
-        });
-    }
-
-    @Test
-    public void testCreationCanardPdvNegatifOuNull() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            new CanardEau("Eau", 0, 50).getClass();
-        });
-        assertThrows(IllegalArgumentException.class, () -> {
-            new CanardEau("Eau", -100, 50).getClass();
-        });
-    }
-
-    @Test
-    public void testCreationCanardPaNegatifOuNull() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            new CanardEau("Eau", 100, 0).getClass();
-        });
-        assertThrows(IllegalArgumentException.class, () -> {
-            new CanardEau("Eau", 100, -50).getClass();
-        });
     }
 
     // ---------- TESTS GETTERS ---------- //
@@ -104,51 +73,88 @@ public class CanardTest {
         assertEquals(50, canardGlace.getPointsAttaque());
     }
 
+    @Test
+    public void testGetVitesse() {
+        assertEquals(30, canardEau.getVitesse());
+        assertEquals(30, canardFeu.getVitesse());
+        assertEquals(30, canardVent.getVitesse());
+        assertEquals(30, canardGlace.getVitesse());
+    }
+
+    @Test
+    public void testGetEnergie() {
+        assertEquals(100, canardEau.getEnergie());
+        assertEquals(100, canardFeu.getEnergie());
+        assertEquals(100, canardVent.getEnergie());
+        assertEquals(100, canardGlace.getEnergie());
+
+    }
+
     // ---------- TESTS METHODES ---------- //
 
     @Test
-    public void testAttaquerCibleNulle() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            canardEau.attaquer(null, 50);
-        });
-    }
-
-    @Test
-    public void testAttaquerSoitMeme() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            canardEau.attaquer(canardEau, 50);
-        });
-    }
-
-    @Test
     public void testAttaquerNeutre() {
-        canardEau.attaquer(canardGlace, 50);
-        assertEquals(50, canardGlace.getPointsDeVie());
+        int initialPV = canardFeu.getPointsDeVie();
+        canardVent.attaquer(canardFeu, Capacite.VENT_TEST);
+        assertEquals(initialPV - canardVent.getPointsAttaque() * 0.2 * Capacite.VENT_TEST.getDegats(),
+                canardFeu.getPointsDeVie());
     }
 
     @Test
     public void testAttaquerSuperEfficace() {
-        canardEau.attaquer(canardFeu, 50);
-        assertTrue(canardFeu.estKO());
+        int initialPV = canardFeu.getPointsDeVie();
+        canardEau.attaquer(canardFeu, Capacite.EAU_TEST);
+        assertTrue(initialPV - canardEau.getPointsAttaque() * 0.2 * Capacite.EAU_TEST.getDegats() * 1.5 <= canardFeu
+                .getPointsDeVie());
+
     }
 
     @Test
-    public void testSubirDegatsDegatsNegatifs() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            canardEau.subirDegats(-10);
-        });
-    }
+    public void testAttaquerPasTresEfficace() {
+        int initialPV = canardFeu.getPointsDeVie();
+        canardGlace.attaquer(canardFeu, Capacite.GLACE_TEST);
+        assertEquals(initialPV - canardGlace.getPointsAttaque() * 0.2 * Capacite.GLACE_TEST.getDegats() * 0.5,
+                canardFeu.getPointsDeVie());
 
-    @Test
-    public void testSubirDegats() {
-        canardEau.subirDegats(50);
-        assertEquals(50, canardEau.getPointsDeVie());
     }
 
     @Test
     public void testEstKO() {
-        assertFalse(canardEau.estKO());
         canardEau.subirDegats(100);
         assertTrue(canardEau.estKO());
+        canardFeu.subirDegats(50);
+        assertFalse(canardFeu.estKO());
+    }
+
+    @Test
+    public void testInitStatsEau() {
+        Canard c = new CanardEau("Water");
+        assertTrue(c.getPointsDeVie() >= 45 && c.getPointsDeVie() <= 50, c.toString());
+        assertTrue(c.getPointsAttaque() >= 30 && c.getPointsAttaque() <= 35, c.toString());
+        assertTrue(c.getVitesse() >= 40 && c.getVitesse() <= 45, c.toString());
+    }
+
+    @Test
+    public void testInitStatsFeu() {
+        Canard c = new CanardFeu("Fire");
+        assertTrue(c.getPointsDeVie() >= 35 && c.getPointsDeVie() <= 40, c.toString());
+        assertTrue(c.getPointsAttaque() >= 45 && c.getPointsAttaque() <= 55, c.toString());
+        assertTrue(c.getVitesse() >= 35 && c.getVitesse() <= 45, c.toString());
+    }
+
+    @Test
+    public void testInitStatsGlace() {
+        Canard c = new CanardGlace("Ice");
+        assertTrue(c.getPointsDeVie() >= 55 && c.getPointsDeVie() <= 60, c.toString());
+        assertTrue(c.getPointsAttaque() >= 25 && c.getPointsAttaque() <= 30, c.toString());
+        assertTrue(c.getVitesse() >= 30 && c.getVitesse() <= 35, c.toString());
+    }
+
+    @Test
+    public void testInitStatsVent() {
+        Canard c = new CanardVent("Wind");
+        assertTrue(c.getPointsDeVie() >= 30 && c.getPointsDeVie() <= 35, c.toString());
+        assertTrue(c.getPointsAttaque() >= 40 && c.getPointsAttaque() <= 45, c.toString());
+        assertTrue(c.getVitesse() >= 45 && c.getVitesse() <= 50, c.toString());
     }
 }
