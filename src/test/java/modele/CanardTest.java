@@ -1,15 +1,64 @@
 package modele;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class CanardTest {
 
-    private CanardEau canardEau = new CanardEau("Eau", 100, 50);
-    private CanardFeu canardFeu = new CanardFeu("Feu", 100, 50);
-    private CanardVent canardVent = new CanardVent("Vent", 100, 50);
-    private CanardGlace canardGlace = new CanardGlace("Glace", 100, 50);
+    private CanardEau canardEau;
+    private CanardFeu canardFeu;
+    private CanardVent canardVent;
+    private CanardGlace canardGlace;
+
+    @BeforeEach
+    public void setUp() {
+        canardEau = new CanardEau("Eau", 100, 50);
+        canardFeu = new CanardFeu("Feu", 100, 50);
+        canardVent = new CanardVent("Vent", 100, 50);
+        canardGlace = new CanardGlace("Glace", 100, 50);
+    }
+
+    @AfterEach
+    public void tearDown() {
+        canardEau = null;
+        canardFeu = null;
+        canardVent = null;
+        canardGlace = null;
+    }
+
+    @Test
+    public void testCreationCanardNomKO() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            new CanardEau(null, 100, 50).getClass();
+        });
+        assertThrows(IllegalArgumentException.class, () -> {
+            new CanardEau("", 100, 50).getClass();
+        });
+    }
+
+    @Test
+    public void testCreationCanardPdvNegatifOuNull() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            new CanardEau("Eau", 0, 50).getClass();
+        });
+        assertThrows(IllegalArgumentException.class, () -> {
+            new CanardEau("Eau", -100, 50).getClass();
+        });
+    }
+
+    @Test
+    public void testCreationCanardPaNegatifOuNull() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            new CanardEau("Eau", 100, 0).getClass();
+        });
+        assertThrows(IllegalArgumentException.class, () -> {
+            new CanardEau("Eau", 100, -50).getClass();
+        });
+    }
 
     @Test
     public void testGetNom() {
