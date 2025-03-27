@@ -1,13 +1,13 @@
 package modele;
 
-public class Canard {
+public abstract class Canard {
 
     private String nom;
     private TypeCanard type;
     private int pv, pa;
     // Capacité spéciale
 
-    public Canard(String nom, TypeCanard type, int pv, int pa) {
+    protected Canard(String nom, TypeCanard type, int pv, int pa) {
         this.nom = nom;
         this.type = type;
         this.pv = pv;
