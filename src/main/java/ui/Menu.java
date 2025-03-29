@@ -1,5 +1,6 @@
 package ui;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -19,7 +20,8 @@ public class Menu {
         int codeRetour = -1;
 
         System.out.println(" ---------- MENU PRINCIPAL ---------- ");
-        System.out.println("0. Quitter\n1. Créer un Canard\n2. Afficher la liste de mes Canards\n3. Lancer un Combat");
+        System.out.println(
+                "0. Quitter\n1. Créer un Canard\n2. Afficher la liste de mes Canards\n3. Lancer un Combat\n4. Lancer le mode Canarogue");
         System.out.print(">>> ");
         String choix = scanner.nextLine();
 
@@ -36,6 +38,8 @@ public class Menu {
             case "3":
                 codeRetour = 3;
                 break;
+            case "4":
+                codeRetour = 4;
             default:
                 codeRetour = -1;
         }
@@ -102,8 +106,82 @@ public class Menu {
 
     public static void afficherListCanards(List<Canard> canards) {
         System.out.println(" ---------- LISTE DE MES CANARDS ---------- ");
-        for (Canard canard : canards) {
-            System.out.println(canard);
+        for (int i = 0; i < canards.size(); i++) {
+            System.out.println((i + 1) + " - " + canards.get(i));
         }
+    }
+
+    public static void menuCombat(List<Canard> canards) {
+        System.out.println(" ---------- MENU COMBAT ---------- ");
+        String choix = "null";
+
+        while (!choix.equals("0") && !choix.equals("1") && !choix.equals("2")) {
+
+            System.out.println("0. Retour au menu principal\n1. Combat 1 VS 1");
+            if (canards.size() >= 3) {
+                System.out.println("2. Combat 3 VS 3");
+            }
+            System.out.print(">>> ");
+
+            choix = scanner.nextLine();
+
+            switch (choix) {
+                case "0":
+                    break;
+                case "1":
+                    Canard canardCombat = selectionnerUnCanard(canards);
+                    System.out.println(canardCombat);
+                    break;
+                case "2":
+                    if (canards.size() < 3) {
+                        System.out.println(choix = "Commande inconnue !");
+                        break;
+                    }
+                    List<Canard> canardsAChoisir = new ArrayList<>(canards);
+                    List<Canard> canardsCombat = new ArrayList<>(3);
+                    for (int i = 0; i < 3; i++) {
+                        canardsCombat.add(selectionnerUnCanard(canardsAChoisir));
+                        canardsAChoisir.remove(canardsCombat.get(i));
+                    }
+                    afficherListCanards(canardsCombat);
+                    break;
+                default:
+                    System.out.println("Commande inconnue !");
+                    break;
+            }
+        }
+
+    }
+
+    private static Canard selectionnerUnCanard(List<Canard> canards) {
+        if (canards.size() == 1) {
+            return canards.get(0); // Si un seul canard, on le sélectionne directement
+        }
+
+        System.out.println("Vous avez plusieurs Canards, merci d'en choisir un seul :");
+
+        int indiceCanard = -1;
+        while (indiceCanard < 0 || indiceCanard >= canards.size()) {
+            Menu.afficherListCanards(canards);
+            System.out.print(">>> ");
+            String choixCanard1 = scanner.nextLine();
+
+            try {
+                int choix = Integer.parseInt(choixCanard1);
+                if (choix >= 1 && choix <= canards.size()) {
+                    indiceCanard = choix - 1;
+                } else {
+                    System.out.println("Merci de sélectionner un canard entre 1 et " + canards.size() + " !");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Entrée invalide, merci d'entrer un nombre !");
+            }
+        }
+
+        return canards.get(indiceCanard);
+    }
+
+    private void afficherCombat(List<Canard> canards) {
+
     }
 }

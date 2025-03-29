@@ -20,6 +20,15 @@ public class App {
                 case 2:
                     Menu.afficherListCanards(canards);
                     break;
+                case 3:
+                    if (canards.size() < 1) {
+                        System.out.println("Vous ne pouvez pas lancer un combat si vous n'avez pas de canard !");
+                    } else {
+                        Menu.menuCombat(canards);
+                    }
+                    break;
+                case 4:
+                    break;
             }
         }
         System.out.println("Merci d'avoir joué !");
