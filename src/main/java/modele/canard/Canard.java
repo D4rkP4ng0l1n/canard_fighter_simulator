@@ -331,9 +331,14 @@ public abstract class Canard {
 
     @Override
     public String toString() {
-        return this.nom + " (" + this.type + ") [Niveau " + this.niveau + "] : " +
+        String canard = this.nom + " (" + this.type + ") [Niveau " + this.niveau + "] : " +
                 "\n - PV : " + this.getPointsDeVie() +
                 "\n - Attaque :" + this.getPointsAttaque() +
-                "\n - Vitesse : " + this.getVitesse();
+                "\n - Vitesse : " + this.getVitesse() +
+                "\n\n Liste des capacités : ";
+        for (Capacite c : this.capacites) {
+            canard += "\n - " + c;
+        }
+        return canard;
     }
 }
