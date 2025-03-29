@@ -203,10 +203,17 @@ public abstract class Canard {
 
     // ---------- SETTERS ---------- //
 
+    /*
+     * Set le statut du canard
+     */
     public void setStatut(Statut statut) {
         this.statut = statut;
     }
 
+    /*
+     * Permet au canard d'apprendre une capacité. Si il possède déjà 4 capacités
+     * alors l'utilisateur devra en choisir une à supprimer
+     */
     public void apprendreCapacite(Capacite capacite) {
         if (this.capacites.size() < 4)
             this.capacites.add(capacite);
@@ -243,6 +250,11 @@ public abstract class Canard {
             this.statsEnCombat.set(0, this.stats.get(0));
     }
 
+    public void initialiserStatistiquesCombat() {
+        this.statsEnCombat = new ArrayList<>(stats);
+        this.energie = MAX_ENERGIE;
+    }
+
     /*
      * Applique un effet sur le canard
      */
@@ -251,12 +263,16 @@ public abstract class Canard {
             case CRIT:
                 break;
             case SOIN:
+                this.soigner((int) montantEffet);
                 break;
             case SOIN_STATUT:
+                this.retirerStatut();
                 break;
             case BOOST_ATTAQUE:
+                this.statsEnCombat.set(1, (int) (this.statsEnCombat.get(1) * montantEffet));
                 break;
             case BOOST_VITESSE:
+                this.statsEnCombat.set(2, (int) (this.statsEnCombat.get(2) * montantEffet));
                 break;
             default:
                 break;
@@ -315,7 +331,7 @@ public abstract class Canard {
 
     @Override
     public String toString() {
-        return this.nom + " (" + this.type + ") [ Niveau " + this.niveau + "] : " +
+        return this.nom + " (" + this.type + ") [Niveau " + this.niveau + "] : " +
                 "\n - PV : " + this.getPointsDeVie() +
                 "\n - Attaque :" + this.getPointsAttaque() +
                 "\n - Vitesse : " + this.getVitesse();

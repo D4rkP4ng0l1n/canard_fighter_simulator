@@ -17,10 +17,7 @@ import modele.canard.TypeCanard;
 
 public class CapaciteSpecialeTest {
 
-    private Canard canardEau;
-    private Canard canardFeu;
-    private Canard canardVent;
-    private Canard canardGlace;
+    private Canard canardEau, canardFeu, canardVent, canardGlace;
 
     @BeforeEach
     public void setUp() {
