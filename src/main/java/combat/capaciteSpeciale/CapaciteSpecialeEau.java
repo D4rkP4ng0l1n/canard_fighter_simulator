@@ -17,4 +17,9 @@ public class CapaciteSpecialeEau implements CapaciteSpeciale {
         canardCible.subirDegats(soin / 2);
     }
 
+    @Override
+    public String toString() {
+        return "Capacité Spéciale Eau : Soigne de la moitié des PV restants de la cible et inflige des dégâts équivalents à la moitié de ce soin.";
+    }
+
 }

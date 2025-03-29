@@ -306,6 +306,13 @@ public abstract class Canard {
      */
     public abstract void utiliserCapaciteSpeciale(Canard canardCible);
 
+    public void afficherCapacite() {
+        for (Capacite c : this.capacites) {
+            System.out.println(c);
+        }
+        System.out.println(this.capaciteSpeciale);
+    }
+
     @Override
     public String toString() {
         return this.nom + " (" + this.type + ") [ Niveau " + this.niveau + "] : " +

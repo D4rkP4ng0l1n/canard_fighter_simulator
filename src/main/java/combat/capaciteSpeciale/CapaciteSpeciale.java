@@ -6,4 +6,6 @@ public interface CapaciteSpeciale {
 
     public void activer(Canard canardActif, Canard canardCible);
 
+    public String toString();
+
 }
