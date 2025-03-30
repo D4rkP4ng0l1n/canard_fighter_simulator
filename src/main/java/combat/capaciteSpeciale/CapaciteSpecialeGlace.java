@@ -12,6 +12,7 @@ public class CapaciteSpecialeGlace implements CapaciteSpeciale {
 
     @Override
     public void activer(Canard canardActif, Canard canardCible) {
+        System.out.println((canardActif.getNom() + " UTILISE SA CAPACITE SPECIALE !"));
         canardCible.subirDegats((int) (canardCible.getPointsDeVieCombat() * COEFF_EQUILIBRAGE));
         if (canardCible.getStatut() != Statut.GEL) {
             canardCible.retirerStatut();

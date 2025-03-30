@@ -13,6 +13,7 @@ public class CapaciteSpecialeVent implements CapaciteSpeciale {
 
     @Override
     public void activer(Canard canardActif, Canard canardCible) {
+        System.out.println((canardActif.getNom() + " UTILISE SA CAPACITE SPECIALE !"));
         canardActif.appliquerEffet(Effet.BOOST_VITESSE, COEFF_BOOST_VITESSE);
         canardActif.appliquerEffet(Effet.CRIT, BOOST_CRITIQUE);
     }

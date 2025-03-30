@@ -309,9 +309,6 @@ public class Menu {
                 }
             }
             combat.changerAttaquant();
-            if (combat.getTour() % 2 == 0) {
-                combat.finDeTour();
-            }
         }
 
         // La fin du combat

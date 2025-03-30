@@ -12,7 +12,6 @@ public class Combat {
     public static final int REGEN_ENERGIE_FIN_DE_TOUR = 5; // A chaque fin de tour, les canards régénèrent 5 PE
 
     private Canard attaquant, cible;
-    private int tour; // Tour actuel du combat ( Un tour = une attaque )
 
     // ---------- CONSTRUCTEURS ---------- //
 
@@ -59,13 +58,6 @@ public class Combat {
         return this.cible;
     }
 
-    /*
-     * Retourne le tour actuel du combat
-     */
-    public int getTour() {
-        return this.tour;
-    }
-
     // ---------- METHODES ---------- //
 
     /*
@@ -90,13 +82,13 @@ public class Combat {
         }
         System.out.print("\n");
         this.attaquant.attaquer(this.cible, capacite);
-        this.tour++;
+        finDePhase();
     }
 
     /*
      * Applique tous les effets de STATUT de fin de tour et incrémente le tour de 1
      */
-    public void finDeTour() {
+    private void finDePhase() {
         effetFinDeTour(attaquant);
         effetFinDeTour(cible);
         attaquant.regenererEnergie(REGEN_ENERGIE_FIN_DE_TOUR);
@@ -104,14 +96,14 @@ public class Combat {
     }
 
     private void effetFinDeTour(Canard canard) {
-        switch (attaquant.getStatut()) {
+        switch (canard.getStatut()) {
             case BRULURE:
                 System.out.println(canard.getNom() + " souffre de sa brûlure");
-                canard.subirDegats((int) (canard.getPointsDeVieCombat() * (1 - Statut.DEGATS_BRULURE)));
+                canard.subirDegats((int) (canard.getPointsDeVieCombat() * (Statut.DEGATS_BRULURE)));
                 break;
             case EMPOISONNEMENT:
                 System.out.println(canard.getNom() + " souffre du poison");
-                canard.subirDegats((int) (canard.getPointsDeVieCombat() * (1 - Statut.DEGATS_POISON)));
+                canard.subirDegats((int) (canard.getPointsDeVieCombat() * (Statut.DEGATS_POISON)));
                 break;
             default:
                 break;

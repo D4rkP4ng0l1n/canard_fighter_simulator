@@ -333,6 +333,7 @@ public abstract class Canard {
         this.energie += energie;
         if (this.energie > MAX_ENERGIE)
             this.energie = MAX_ENERGIE;
+        System.out.println(this.nom + " possède " + this.energie + " PE");
     }
 
     /*

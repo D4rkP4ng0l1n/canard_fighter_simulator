@@ -11,6 +11,7 @@ public class CapaciteSpecialeEau implements CapaciteSpeciale {
 
     @Override
     public void activer(Canard canardActif, Canard canardCible) {
+        System.out.println((canardActif.getNom() + " UTILISE SA CAPACITE SPECIALE !"));
         canardActif.setStatut(Statut.NEUTRE);
         int soin = canardCible.getPointsDeVieCombat() / 2;
         canardActif.soigner(soin);
