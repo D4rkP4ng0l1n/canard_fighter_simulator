@@ -19,7 +19,9 @@ public abstract class Canard {
     // ---------- ATTRIBUTS ---------- //
 
     public static final int NIVEAU_MAX = 100;
-    public static final int MAX_ENERGIE = 100;
+    public static final int MAX_ENERGIE = 30;
+    public static final int CHANCE_COUP_CRITIQUE = 10; // 10 % de chance de faire un coup critique
+    public static final float MULTIPLICATEUR_DEGATS_CRITIQUES = 1.5f;
 
     private String nom;
     private TypeCanard type;
@@ -36,6 +38,7 @@ public abstract class Canard {
     protected List<Capacite> capacites;
     protected CapaciteSpeciale capaciteSpeciale;
     protected boolean capaciteSpecialeDisponible; // True si la capacité spéciale du canard est disponible
+    private int chanceCoupCritique;
 
     // ---------- CONSTRUCTEURS ---------- //
 
@@ -60,7 +63,7 @@ public abstract class Canard {
         this.capacites = new ArrayList<>(4);
         this.capaciteSpeciale = capaciteSpeciale;
         this.capaciteSpecialeDisponible = true;
-
+        this.chanceCoupCritique = CHANCE_COUP_CRITIQUE;
     }
 
     /*
@@ -92,6 +95,7 @@ public abstract class Canard {
         this.capacites = new ArrayList<>(4);
         this.capaciteSpeciale = capaciteSpeciale;
         this.capaciteSpecialeDisponible = true;
+        this.chanceCoupCritique = CHANCE_COUP_CRITIQUE;
     }
 
     /*
@@ -117,6 +121,7 @@ public abstract class Canard {
         this.capacites = new ArrayList<>(4);
         this.capaciteSpeciale = capaciteSpeciale;
         this.capaciteSpecialeDisponible = true;
+        this.chanceCoupCritique = CHANCE_COUP_CRITIQUE;
     }
 
     // ---------- GETTERS ---------- //
@@ -257,9 +262,23 @@ public abstract class Canard {
             }
             System.out.println("Il a réussi a attaquer !");
         }
+        if (this.energie < capacite.getCout()) {
+            System.out.println(this.nom + " n'a pas assez d'energie pour lancer " + capacite.getNom());
+            return;
+        }
         // Calcul des dégâts
         double degats = (this.getPointsAttaque() * Combat.COEFF_EQUILIBRAGE) * capacite.getDegats()
                 * TypeCanard.getMultiplicateur(capacite.getType(), autreCanard.getType());
+
+        // Calcul du crit
+        Random crit = new Random();
+        boolean critique = (this.chanceCoupCritique == 0) || (crit.nextInt(this.chanceCoupCritique) == 0);
+        if (critique) {
+            degats *= 1.5;
+            System.out.println("Coup critique ! ");
+            this.chanceCoupCritique = CHANCE_COUP_CRITIQUE; // Dans le cas où le canard aurait reçu un boost
+        }
+
         // Infliger les degats
         autreCanard.subirDegats((int) degats);
     }
@@ -306,17 +325,26 @@ public abstract class Canard {
     public void appliquerEffet(Effet effet, double montantEffet) {
         switch (effet) {
             case CRIT:
+                System.out.println(
+                        this.nom + " voit ses chances de coup critique atteindre " + (100 - montantEffet) + "%");
+                this.chanceCoupCritique = (int) montantEffet;
                 break;
             case SOIN:
+                System.out.println(this.nom + " se soigne de " + montantEffet + " point de vie");
                 this.soigner((int) montantEffet);
                 break;
             case SOIN_STATUT:
-                this.retirerStatut();
+                if (this.statut != Statut.NEUTRE) {
+                    System.out.println(this.nom + " est guerri du statut " + this.statut);
+                    this.retirerStatut();
+                }
                 break;
             case BOOST_ATTAQUE:
+                System.out.println(this.nom + " voit son attaque augmenter !");
                 this.statsEnCombat.set(1, (int) (this.statsEnCombat.get(1) * montantEffet));
                 break;
             case BOOST_VITESSE:
+                System.out.println(this.nom + " voit sa vitesse augmenter !");
                 this.statsEnCombat.set(2, (int) (this.statsEnCombat.get(2) * montantEffet));
                 break;
             default:
