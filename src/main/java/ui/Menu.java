@@ -28,7 +28,7 @@ public class Menu {
 
         System.out.println(" ---------- MENU PRINCIPAL ---------- ");
         System.out.println(
-                "0. Quitter\n1. Créer un Canard\n2. Afficher la liste de mes Canards\n3. Lancer un Combat\n4. Lancer le mode Canarogue");
+                "0. Quitter\n1. Créer un Canard\n2. Afficher la liste de mes Canards\n3. Ajouter de l'exp\n4. Lancer un Combat\n5. Lancer le mode Canarogue");
         System.out.print(">>> ");
         String choix = scanner.nextLine();
 
@@ -47,8 +47,13 @@ public class Menu {
                 break;
             case "4":
                 codeRetour = 4;
+                break;
+            case "5":
+                codeRetour = 5;
+                break;
             default:
                 codeRetour = -1;
+                break;
         }
         return codeRetour;
     }
@@ -116,6 +121,33 @@ public class Menu {
         for (int i = 0; i < canards.size(); i++) {
             System.out.println((i + 1) + " - " + canards.get(i));
         }
+    }
+
+    public static void ajouterExperience(List<Canard> canards) {
+        System.out.println(" ---------- AJOUTER EXPERIENCE ---------- ");
+
+        if (canards.isEmpty()) {
+            System.out.println("Vous n'avez aucun canard !");
+            return;
+        }
+
+        Canard canard = selectionnerUnCanard(canards);
+
+        int expAjoutee = -1;
+        while (expAjoutee < 0) {
+            System.out.print("Combien d'expérience souhaitez-vous ajouter à " + canard.getNom() + " ?\n>>> ");
+            String input = scanner.nextLine();
+            try {
+                expAjoutee = Integer.parseInt(input);
+                if (expAjoutee < 0) {
+                    System.out.println("L'expérience ne peut pas être négative !");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Veuillez entrer un nombre valide.");
+            }
+        }
+
+        canard.gagnerExperience(expAjoutee);
     }
 
     public static void menuCombat(List<Canard> canards) {
@@ -328,5 +360,63 @@ public class Menu {
                 + canard.getNiveau() + "] "
                 + "[Energie : " + canard.getEnergie() + "/" + Canard.MAX_ENERGIE + "] - (PV : "
                 + canard.getPointsDeVieCombat() + "/" + canard.getPointsDeVie() + ")");
+    }
+
+    /*
+     * Permet au canard d'apprendre une capacité. Si il possède déjà 4 capacités
+     * alors l'utilisateur devra en choisir une à supprimer
+     */
+    public static void apprendreCapacite(Canard canard, Capacite capacite) {
+        if (canard.getCapacites().size() < 4) {
+            System.out.println(canard.getNom() + " a appris " + capacite.getNom() + " !");
+            canard.ajouterCapacite(capacite);
+        } else {
+
+            System.out.println(canard.getNom() + " souhaite apprendre " + capacite);
+            String oublie = "-1";
+
+            Set<String> valeursValides = new HashSet<>();
+            for (int i = 0; i < canard.getCapacites().size() + 1; i++) {
+                valeursValides.add(String.valueOf(i + 1)); // Pour un affichage 1, 2, 3, 4
+            }
+
+            while (!valeursValides.contains(oublie)) { // Tant que l'utilisateur n'a pas choisi une valeur valide
+                System.out.println(
+                        canard.getNom()
+                                + " connait déjà 4 capacités, il doit en oublier une pour apprendre une nouvelle." +
+                                "\nLaquelle doit-il oublier ?");
+                for (int i = 0; i < canard.getCapacites().size(); i++) {
+                    System.out.println((i + 1) + ". " + canard.getCapacites().get(i));
+                }
+                System.out.println("5. " + capacite);
+                System.out.print(">>>");
+                oublie = scanner.nextLine();
+                switch (oublie) {
+                    case "1":
+                        afficherCapaciteOublie(canard, capacite, 0);
+                        break;
+                    case "2":
+                        afficherCapaciteOublie(canard, capacite, 1);
+                        break;
+                    case "3":
+                        afficherCapaciteOublie(canard, capacite, 2);
+                        break;
+                    case "4":
+                        afficherCapaciteOublie(canard, capacite, 3);
+                        break;
+                    case "5":
+                        System.out.println(canard.getNom() + " n'apprend pas " + capacite.getNom());
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    }
+
+    private static void afficherCapaciteOublie(Canard canard, Capacite capacite, int position) {
+        System.out.println(canard.getNom() + " oublie " + canard.getCapacites().get(position).getNom() + " et apprend "
+                + capacite.getNom());
+        canard.setCapacite(capacite, position);
     }
 }

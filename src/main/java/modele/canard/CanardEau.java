@@ -29,7 +29,7 @@ public class CanardEau extends Canard {
      */
     public CanardEau(String nom) {
         super(nom, TypeCanard.EAU, new CapaciteSpecialeEau());
-        this.apprendreCapacite(Capacite.GOUTTELETTE);
+        this.ajouterCapacite(Capacite.GOUTTELETTE);
     }
 
     /*
@@ -37,7 +37,7 @@ public class CanardEau extends Canard {
      */
     public CanardEau(String nom, int niveau) {
         super(nom, TypeCanard.EAU, new CapaciteSpecialeEau(), niveau);
-        this.apprendreCapacite(Capacite.GOUTTELETTE);
+        this.ajouterCapacite(Capacite.GOUTTELETTE);
     }
 
     /*
@@ -45,7 +45,7 @@ public class CanardEau extends Canard {
      */
     public CanardEau(String nom, int pv, int attaque, int vitesse) {
         super(nom, TypeCanard.EAU, new CapaciteSpecialeEau(), pv, attaque, vitesse);
-        this.apprendreCapacite(Capacite.GOUTTELETTE);
+        this.ajouterCapacite(Capacite.GOUTTELETTE);
     }
 
     // ---------- METHODES ---------- //

@@ -29,7 +29,7 @@ public class CanardGlace extends Canard {
      */
     public CanardGlace(String nom) {
         super(nom, TypeCanard.GLACE, new CapaciteSpecialeGlace());
-        this.apprendreCapacite(Capacite.GIVRE_CANARD);
+        this.ajouterCapacite(Capacite.GIVRE_CANARD);
     }
 
     /*
@@ -37,7 +37,7 @@ public class CanardGlace extends Canard {
      */
     public CanardGlace(String nom, int niveau) {
         super(nom, TypeCanard.GLACE, new CapaciteSpecialeGlace(), niveau);
-        this.apprendreCapacite(Capacite.GIVRE_CANARD);
+        this.ajouterCapacite(Capacite.GIVRE_CANARD);
     }
 
     /*
@@ -45,7 +45,7 @@ public class CanardGlace extends Canard {
      */
     public CanardGlace(String nom, int pv, int attaque, int vitesse) {
         super(nom, TypeCanard.GLACE, new CapaciteSpecialeGlace(), pv, attaque, vitesse);
-        this.apprendreCapacite(Capacite.GIVRE_CANARD);
+        this.ajouterCapacite(Capacite.GIVRE_CANARD);
     }
 
     // ---------- METHODES ---------- //

@@ -29,7 +29,7 @@ public class CanardVent extends Canard {
      */
     public CanardVent(String nom) {
         super(nom, TypeCanard.VENT, new CapaciteSpecialeVent());
-        this.apprendreCapacite(Capacite.SOUFFLE_LEGER);
+        this.ajouterCapacite(Capacite.SOUFFLE_LEGER);
     }
 
     /*
@@ -37,7 +37,7 @@ public class CanardVent extends Canard {
      */
     public CanardVent(String nom, int niveau) {
         super(nom, TypeCanard.VENT, new CapaciteSpecialeVent(), niveau);
-        this.apprendreCapacite(Capacite.SOUFFLE_LEGER);
+        this.ajouterCapacite(Capacite.SOUFFLE_LEGER);
     }
 
     /*
@@ -45,7 +45,7 @@ public class CanardVent extends Canard {
      */
     public CanardVent(String nom, int pv, int attaque, int vitesse) {
         super(nom, TypeCanard.VENT, new CapaciteSpecialeVent(), pv, attaque, vitesse);
-        this.apprendreCapacite(Capacite.SOUFFLE_LEGER);
+        this.ajouterCapacite(Capacite.SOUFFLE_LEGER);
     }
 
     // ---------- METHODES ---------- //
