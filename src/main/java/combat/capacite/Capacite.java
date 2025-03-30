@@ -40,7 +40,31 @@ public enum Capacite {
     OURAPLUME("Ouraplume", TypeCanard.VENT, 20, 7, 5, 85),
     TORNAPLUME("Tornaplume", TypeCanard.VENT, 30, 11, 8, 75),
     VENT_VIF("Vent Vif", TypeCanard.VENT, 40, 6, 5, 90),
-    OURAGAN_CANARD("Ouragan Canard", TypeCanard.VENT, 50, 9, 7, 80);
+    OURAGAN_CANARD("Ouragan Canard", TypeCanard.VENT, 50, 9, 7, 80),
+
+    // Capacités de type TOXIQUE
+    VAPEUR_TOXIQUE("Vapeur Toxique", TypeCanard.TOXIQUE, 0, 3, 2, 100), // Starter
+    BAVE_CORROSIVE("Bave Corrosive", TypeCanard.TOXIQUE, 10, 5, 3, 90),
+    PLUMES_EMPOISONNEES("Plumes Empoisonnées", TypeCanard.TOXIQUE, 20, 8, 6, 80),
+    BRUME_INFECTIEUSE("Brume Infectieuse", TypeCanard.TOXIQUE, 30, 10, 7, 75),
+    MORSURE_VENIMEUSE("Morsure Venimeuse", TypeCanard.TOXIQUE, 40, 6, 5, 85),
+    ONDE_MORTELLE("Onde Mortelle", TypeCanard.TOXIQUE, 50, 4, 3, 95),
+
+    // Capacités de type ELECTRIQUE
+    ETINCELLE_CANARD("Étincelle Canard", TypeCanard.ELECTRIQUE, 0, 2, 3, 100), // Starter
+    BEC_ELECTRIQUE("Bec Électrique", TypeCanard.ELECTRIQUE, 10, 6, 4, 95),
+    PLUMES_CHARGEES("Plumes Chargées", TypeCanard.ELECTRIQUE, 20, 9, 5, 90),
+    CHOC_VOLTAIQUE("Choc Voltaïque", TypeCanard.ELECTRIQUE, 30, 12, 8, 75),
+    ORAGE_CANARD("Orage Canard", TypeCanard.ELECTRIQUE, 40, 7, 6, 85),
+    TONNERRE_DIVIN("Tonnerre Divin", TypeCanard.ELECTRIQUE, 50, 5, 4, 95),
+
+    // Capacité de type SOL
+    TERRAIN_BOUEUX("Terrain Boueux", TypeCanard.SOL, 0, 3, 3, 100), // Starter
+    BEC_ROCHEUX("Bec Rocheux", TypeCanard.SOL, 10, 5, 4, 90),
+    SABLE_ENVAHISSANT("Sable Envahissant", TypeCanard.SOL, 20, 7, 6, 85),
+    EBOULEMENT_PLUMES("Éboulement Plumes", TypeCanard.SOL, 30, 11, 9, 70),
+    FAILLE_TERRESTRE("Faille Terrestre", TypeCanard.SOL, 40, 6, 5, 80),
+    TREMBLEMENT_DU_CANARD("Tremblement du Canard", TypeCanard.SOL, 50, 8, 7, 90);
 
     private final String nom;
     private final TypeCanard type;

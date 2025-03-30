@@ -73,7 +73,7 @@ public class Menu {
         TypeCanard typeCanard = null;
         while (typeCanard == null) {
             System.out.println("Quel est le type du canard ( Ecrire le numero correspondant au type ) ? ");
-            System.out.println("1. Eau\n2. Feu\n3. Vent\n4. Glace");
+            System.out.println("1. Eau\n2. Feu\n3. Vent\n4. Glace\n5. Toxique\n6. Electrique\n7. Sol");
             System.out.print(">>> ");
             String type = scanner.nextLine();
             switch (type) {
@@ -88,6 +88,15 @@ public class Menu {
                     break;
                 case "4":
                     typeCanard = TypeCanard.GLACE;
+                    break;
+                case "5":
+                    typeCanard = TypeCanard.TOXIQUE;
+                    break;
+                case "6":
+                    typeCanard = TypeCanard.ELECTRIQUE;
+                    break;
+                case "7":
+                    typeCanard = TypeCanard.SOL;
                     break;
                 default:
                     System.out.println("Type de canard inconnu !");

@@ -75,7 +75,8 @@ public class Combat {
      */
     public void jouerPhase(Capacite capacite) {
         System.out.print(this.attaquant.getNom() + " utilise " + capacite.getNom() + " !");
-        if (TypeCanard.getMultiplicateur(this.attaquant.getType(), this.cible.getType()) == 1.5) {
+        if (TypeCanard.getMultiplicateur(this.attaquant.getType(), this.cible.getType()) == 1.5
+                || this.attaquant.getStatut() == Statut.SURCHARGE) {
             System.out.print(" C'est super efficace !");
         } else if (TypeCanard.getMultiplicateur(this.attaquant.getType(), this.cible.getType()) == 0.5) {
             System.out.print(" Ce n'est pas très efficace...");

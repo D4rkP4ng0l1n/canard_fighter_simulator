@@ -253,6 +253,9 @@ public abstract class Canard {
      * Methodes permettant a un canard d'attaquer un autre canard
      */
     public void attaquer(Canard autreCanard, Capacite capacite) {
+        int malusParalysie = 0;
+        // Verification de l'etat du Canard
+        // Le GEL fait en sorte que le canard a 1/3 d'attaquer
         if (this.statut == Statut.GEL) {
             System.out.println(this.nom + " est gelé...");
             Random random = new Random();
@@ -262,13 +265,31 @@ public abstract class Canard {
             }
             System.out.println("Il a réussi a attaquer !");
         }
+        // La Paralysie fait en sorte que le canard aura un malus de 10% de précision
+        if (this.statut == Statut.PARALYSIE) {
+            malusParalysie = 10;
+        }
+
+        // Verification de l'energie du Canard
         if (this.energie < capacite.getCout()) {
             System.out.println(this.nom + " n'a pas assez d'energie pour lancer " + capacite.getNom());
             return;
         }
+        // Vérification de la précision de l'attaque
+        Random random = new Random();
+        int chanceDeToucher = random.nextInt(100) + 1; // Génère un nombre entre 1 et 100
+        if (chanceDeToucher >= capacite.getPrecision() - malusParalysie) {
+            System.out.println(this.nom + " a raté " + capacite.getNom() + " !");
+            return;
+        }
+        double degats = (this.getPointsAttaque() * Combat.COEFF_EQUILIBRAGE) * capacite.getDegats();
         // Calcul des dégâts
-        double degats = (this.getPointsAttaque() * Combat.COEFF_EQUILIBRAGE) * capacite.getDegats()
-                * TypeCanard.getMultiplicateur(capacite.getType(), autreCanard.getType());
+        if (this.statut != Statut.SURCHARGE) {
+            degats *= TypeCanard.getMultiplicateur(capacite.getType(), autreCanard.getType());
+        } else {
+            degats *= 1.5;
+            this.retirerStatut();
+        }
 
         // Calcul du crit
         Random crit = new Random();
@@ -279,6 +300,7 @@ public abstract class Canard {
             this.chanceCoupCritique = CHANCE_COUP_CRITIQUE; // Dans le cas où le canard aurait reçu un boost
         }
         this.energie -= capacite.getCout();
+
         // Infliger les degats
         autreCanard.subirDegats((int) degats);
     }
@@ -328,6 +350,9 @@ public abstract class Canard {
                 System.out.println(
                         this.nom + " voit ses chances de coup critique atteindre " + (100 - montantEffet) + "%");
                 this.chanceCoupCritique = (int) montantEffet;
+                break;
+            case SUPER_EFFICACE:
+                System.out.println("La prochaine attaque de " + this.nom + " sera super efficace !");
                 break;
             case SOIN:
                 System.out.println(this.nom + " se soigne de " + montantEffet + " point de vie");

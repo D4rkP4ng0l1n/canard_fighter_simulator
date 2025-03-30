@@ -7,7 +7,7 @@ package modele.canard;
  */
 public enum TypeCanard {
 
-    EAU, FEU, GLACE, VENT;
+    EAU, FEU, GLACE, VENT, TOXIQUE, ELECTRIQUE, SOL;
 
     public static final int NB_TYPE = 4; // Nombre de Types
 
@@ -18,11 +18,14 @@ public enum TypeCanard {
      * le multiplicateur pour une attaque de type EAU contre un type FEU.
      */
     private static final double[][] tableDesTypes = {
-            // EAU FEU GLACE VENT
-            { 1.0, 1.5, 1.0, 0.5 }, // EAU
-            { 0.5, 1.0, 1.5, 1.0 }, // FEU
-            { 1.0, 0.5, 1.0, 1.5 }, // GLACE
-            { 1.5, 1.0, 0.5, 1.0 } // VENT
+            // EAU FEU GLACE VENT TOXIQUE ELECTRIQUE SOL
+            { 1.0, 1.5, 0.5, 0.5, 1.0, 1.0, 1.5 }, // EAU
+            { 0.5, 1.0, 1.5, 1.0, 1.5, 1.0, 0.5 }, // FEU
+            { 1.0, 0.5, 1.0, 1.5, 0.5, 1.0, 1.5 }, // GLACE
+            { 1.5, 1.0, 0.5, 1.0, 1.5, 1.0, 0.5 }, // VENT
+            { 1.5, 0.5, 1.5, 1.0, 1.0, 1.0, 0.5 }, // TOXIQUE
+            { 1.5, 1.0, 1.0, 1.5, 1.0, 1.0, 0.0 }, // ELECTRIQUE
+            { 0.5, 1.5, 0.5, 0.0, 1.5, 1.5, 1.0 } // SOL
     };
 
     /**
