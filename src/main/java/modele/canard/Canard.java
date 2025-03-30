@@ -83,7 +83,9 @@ public abstract class Canard {
 
         this.stats = new ArrayList<>(3);
         this.initStats();
-        this.calculerStats();
+        for (int i = 0; i < niveau; i++) {
+            this.calculerStats(); // On simule la montée de niveau du canard
+        }
         this.statsEnCombat = new ArrayList<>(stats);
         this.energie = MAX_ENERGIE;
 
