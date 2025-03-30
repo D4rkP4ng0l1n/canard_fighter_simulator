@@ -9,6 +9,7 @@ import modele.canard.TypeCanard;
 public class Combat {
 
     public static final float COEFF_EQUILIBRAGE = 0.05f; // Coefficient d'équilibrage pour les dégâts infligés
+    public static final int REGEN_ENERGIE_FIN_DE_TOUR = 5; // A chaque fin de tour, les canards régénèrent 5 PE
 
     private Canard attaquant, cible;
     private int tour; // Tour actuel du combat ( Un tour = une attaque )
@@ -98,6 +99,8 @@ public class Combat {
     public void finDeTour() {
         effetFinDeTour(attaquant);
         effetFinDeTour(cible);
+        attaquant.regenererEnergie(REGEN_ENERGIE_FIN_DE_TOUR);
+        cible.regenererEnergie(REGEN_ENERGIE_FIN_DE_TOUR);
     }
 
     private void effetFinDeTour(Canard canard) {

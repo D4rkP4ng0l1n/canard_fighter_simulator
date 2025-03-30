@@ -79,8 +79,8 @@ public class CanardGlace extends Canard {
     public void utiliserCapaciteSpeciale(Canard canardCible) {
         if (this.capaciteSpecialeDisponible) {
             this.capaciteSpeciale.activer(this, canardCible);
+            this.capaciteSpecialeDisponible = false;
         }
-        this.capaciteSpecialeDisponible = false;
     }
 
 }

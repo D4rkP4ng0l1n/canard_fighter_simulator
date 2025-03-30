@@ -294,12 +294,14 @@ public class Menu {
                                         }
                                         break;
                                     case "5":
+                                        canardJoueur.utiliserCapaciteSpeciale(canardAleatoire);
                                         break;
                                     default:
                                         break;
                                 }
                             }
-                            combat.jouerPhase(capaciteJoueur);
+                            if (choixCapacite != "5")
+                                combat.jouerPhase(capaciteJoueur);
                             break;
                         default:
                             System.out.println("Commande inconnue !");
@@ -320,6 +322,7 @@ public class Menu {
             System.out.println(canardJoueur.getNom() + " a perdu le combat !");
         } else if (canardAleatoire.getPointsDeVieCombat() <= 0) {
             System.out.println(canardAleatoire.getNom() + " a perdu le combat !");
+            canardJoueur.gagnerExperience(canardAleatoire);
         }
     }
 

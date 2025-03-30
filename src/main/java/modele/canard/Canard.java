@@ -1,8 +1,10 @@
 package modele.canard;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 import combat.Combat;
 import combat.Statut;
@@ -223,8 +225,53 @@ public abstract class Canard {
      * alors l'utilisateur devra en choisir une à supprimer
      */
     public void apprendreCapacite(Capacite capacite) {
-        if (this.capacites.size() < 4)
+        if (this.capacites.size() < 4) {
+            System.out.println(this.nom + " a appris " + capacite.getNom() + " !");
             this.capacites.add(capacite);
+        } else {
+            System.out.println(this.nom + " souhaite apprendre " + capacite);
+            String oublie = "-1";
+            Set<String> valeursValides = new HashSet<>();
+            for (int i = 0; i < this.capacites.size(); i++) {
+                valeursValides.add(String.valueOf(i + 1)); // Pour un affichage 1, 2, 3, 4
+            }
+            while (!valeursValides.contains(oublie)) { // Tant que l'utilisateur n'a pas choisi une valeur valide
+                System.out.println(
+                        this.nom + " connait déjà 4 capacités, il doit en oublier une pour apprendre une nouvelle." +
+                                "\nLaquelle doit-il oublier ?");
+                for (int i = 0; i < this.capacites.size(); i++) {
+                    System.out.println((i + 1) + ". " + this.capacites.get(i));
+                }
+                System.out.println("5. " + capacite);
+                switch (oublie) {
+                    case "1":
+                        System.out.println(this.nom + " oublie " + this.capacites.get(0).getNom() + " et apprend "
+                                + capacite.getNom());
+                        this.capacites.set(0, capacite);
+                        break;
+                    case "2":
+                        System.out.println(this.nom + " oublie " + this.capacites.get(1).getNom() + " et apprend "
+                                + capacite.getNom());
+                        this.capacites.set(1, capacite);
+                        break;
+                    case "3":
+                        System.out.println(this.nom + " oublie " + this.capacites.get(2).getNom() + " et apprend "
+                                + capacite.getNom());
+                        this.capacites.set(2, capacite);
+                        break;
+                    case "4":
+                        System.out.println(this.nom + " oublie " + this.capacites.get(3).getNom() + " et apprend "
+                                + capacite.getNom());
+                        this.capacites.set(3, capacite);
+                        break;
+                    case "5":
+                        System.out.println(this.nom + " n'apprend pas " + capacite.getNom());
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
     }
 
     // ---------- METHODES ---------- //
@@ -258,9 +305,21 @@ public abstract class Canard {
             this.statsEnCombat.set(0, this.stats.get(0));
     }
 
+    /*
+     * Initialise les statistiques du Canard pour un combat
+     */
     public void initialiserStatistiquesCombat() {
         this.statsEnCombat = new ArrayList<>(stats);
         this.energie = MAX_ENERGIE;
+    }
+
+    /*
+     * Régénère l'énergie du canard
+     */
+    public void regenererEnergie(int energie) {
+        this.energie += energie;
+        if (this.energie > MAX_ENERGIE)
+            this.energie = MAX_ENERGIE;
     }
 
     /*
@@ -314,6 +373,44 @@ public abstract class Canard {
             return null;
 
         return capacitesDisponibles.get(random.nextInt(capacitesDisponibles.size()));
+    }
+
+    /*
+     * Méthode permettant de calculer l'expérience gagner en fin de combat
+     */
+    public void gagnerExperience(Canard canardVaincu) {
+        System.out.println(this.nom + " a gagné " + canardVaincu.getNiveau() * 100 + " Points d'expérience !");
+        this.totalExp += canardVaincu.getNiveau() * 100;
+
+        while (this.totalExp >= this.totalExpPourProchainNiveau) {
+            this.totalExpPourProchainNiveau = (this.niveau + 1) * 100;
+            this.monterNiveau();
+        }
+    }
+
+    /*
+     * Méthode permettant au canard de monté d'un niveau lorsqu'il a assez
+     * d'expérience
+     */
+    private void monterNiveau() {
+        this.niveau++;
+        System.out.println(this.nom + " passe au niveau " + this.niveau + " !");
+        System.out.println(
+                this.nom + " a besoin de " + this.totalExpPourProchainNiveau + " exp pour passer au prochain niveau !");
+        this.calculerStats();
+        this.verifierNouvelleCapacite();
+    }
+
+    /*
+     * Méthode pour permettre au canard de voir si il peut apprendre une nouvelle
+     * attaque
+     */
+    private void verifierNouvelleCapacite() {
+        for (Capacite capacite : Capacite.values()) {
+            if (capacite.getType() == this.type && capacite.getNiveauApprentissage() == this.niveau) {
+                apprendreCapacite(capacite);
+            }
+        }
     }
 
     /*
