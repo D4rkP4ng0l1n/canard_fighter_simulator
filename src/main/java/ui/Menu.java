@@ -182,7 +182,7 @@ public class Menu {
                         canardsCombat.add(selectionnerUnCanard(canardsAChoisir));
                         canardsAChoisir.remove(canardsCombat.get(i));
                     }
-                    afficherListCanards(canardsCombat);
+                    menuCombat3v3(canardsCombat, Musique.MUSIQUE_COMBAT_DRESSEUR);
                     break;
                 default:
                     System.out.println("Commande inconnue !");
@@ -353,6 +353,129 @@ public class Menu {
             canardJoueur.gagnerExperience(canardAleatoire);
         }
         canardJoueur.setCapaciteSpecialeDisponible();
+    }
+
+    private static void menuCombat3v3(List<Canard> canards, String musiqueCombat) {
+        musique.playMusic(musiqueCombat);
+
+        System.out.println(" ---------- COMBAT 3V3 ---------- ");
+
+        List<Canard> equipeJoueur = new ArrayList<>(canards);
+        List<Canard> equipeAdverse = new ArrayList<>();
+
+        for (int i = 0; i < 3; i++) {
+            equipeAdverse.add(genererCanardAleatoire(canards.get(0).getNiveau()));
+        }
+
+        System.out.println("Votre équipe :");
+        afficherListCanards(equipeJoueur);
+
+        System.out.println("Équipe adverse :");
+        afficherListCanards(equipeAdverse);
+
+        int indexJoueur = 0;
+        int indexAdverse = 0;
+
+        while (!equipeJoueur.isEmpty() && !equipeAdverse.isEmpty()) {
+            Canard canardJoueur = equipeJoueur.get(indexJoueur);
+            Canard canardAdverse = equipeAdverse.get(indexAdverse);
+
+            System.out.println("Début du combat entre " + canardJoueur.getNom() + " et " + canardAdverse.getNom());
+
+            Combat combat = new Combat(canardJoueur, canardAdverse);
+            while (!combat.combatTermine()) {
+                afficherEtatCanard(canardJoueur);
+                afficherEtatCanard(canardAdverse);
+
+                System.out.println("1. Attaquer\n2. Changer de Canard");
+                System.out.print(">>> ");
+                String choix = scanner.nextLine();
+
+                if (choix.equals("2")) {
+                    System.out.println("Choisissez un nouveau canard :");
+                    equipeJoueur.remove(canardJoueur);
+                    canardJoueur = selectionnerUnCanard(equipeJoueur);
+                    equipeJoueur.add(0, canardJoueur);
+                    System.out.println(canardJoueur.getNom() + " entre en combat !");
+                    continue;
+                }
+
+                Set<String> capacitesValides = new HashSet<>();
+                capacitesValides.add("0");
+                for (int i = 0; i < canardJoueur.getCapacites().size(); i++) {
+                    capacitesValides.add(String.valueOf(i + 1)); // Pour un affichage 1, 2, 3, 4
+                }
+                capacitesValides.add("5");
+                String choixCapacite = "-1";
+                Capacite capaciteJoueur = (Capacite) null;
+                while (!capacitesValides.contains(choixCapacite)) {
+                    System.out.println("Sélectionner une capacité (" + canardJoueur.getEnergie() + " PE/"
+                            + Canard.MAX_ENERGIE + ")");
+                    System.out.println("0. Retour");
+                    canardJoueur.afficherCapacite();
+                    System.out.print(">>> ");
+                    choixCapacite = scanner.nextLine();
+
+                    switch (choixCapacite) {
+                        case "0":
+                            break;
+                        case "1":
+                            capaciteJoueur = canardJoueur.getCapacites().get(0);
+                            break;
+                        case "2":
+                            if (canardJoueur.getCapacites().size() >= 2) {
+                                capaciteJoueur = canardJoueur.getCapacites().get(1);
+                            } else {
+                                System.out.println("Capacité non disponible");
+                            }
+                            break;
+                        case "3":
+                            if (canardJoueur.getCapacites().size() >= 3) {
+                                capaciteJoueur = canardJoueur.getCapacites().get(2);
+                            } else {
+                                System.out.println("Capacité non disponible");
+                            }
+                            break;
+                        case "4":
+                            if (canardJoueur.getCapacites().size() == 4) {
+                                capaciteJoueur = canardJoueur.getCapacites().get(3);
+                            } else {
+                                System.out.println("Capacité non disponible");
+                            }
+                            break;
+                        case "5":
+                            canardJoueur.utiliserCapaciteSpeciale(canardAdverse);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                if (!choixCapacite.equals("5"))
+                    combat.jouerPhase(capaciteJoueur);
+                combat.changerAttaquant();
+            }
+
+            if (canardJoueur.getPointsDeVieCombat() <= 0) {
+                System.out.println(canardJoueur.getNom() + " est KO !");
+                equipeJoueur.remove(canardJoueur);
+                if (!equipeJoueur.isEmpty()) {
+                    indexJoueur = 0;
+                }
+            }
+            if (canardAdverse.getPointsDeVieCombat() <= 0) {
+                System.out.println(canardAdverse.getNom() + " est KO !");
+                equipeAdverse.remove(canardAdverse);
+                if (!equipeAdverse.isEmpty()) {
+                    indexAdverse = 0;
+                }
+            }
+        }
+
+        if (equipeJoueur.isEmpty()) {
+            System.out.println("Vous avez perdu le combat 3v3 !");
+        } else {
+            System.out.println("Félicitations ! Vous avez gagné le combat 3v3 !");
+        }
     }
 
     private static void afficherEtatCanard(Canard canard) {
