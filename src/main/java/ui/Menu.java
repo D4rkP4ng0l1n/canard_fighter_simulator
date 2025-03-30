@@ -8,6 +8,7 @@ import java.util.Scanner;
 import java.util.Set;
 
 import combat.Combat;
+import combat.capacite.Capacite;
 import modele.canard.Canard;
 import modele.canard.CanardEau;
 import modele.canard.CanardFeu;
@@ -229,31 +230,34 @@ public class Menu {
         System.out.println(canardAleatoire.getNom() + " sauvage apparait !");
         while (!combat.combatTermine()) {
 
-            System.out.println(canardAleatoire.getNom() + " (" + canardAleatoire.getType() + ") [Niveau "
-                    + canardAleatoire.getNiveau() + "] "
-                    + "[Energie : " + canardAleatoire.getEnergie() + "/" + Canard.MAX_ENERGIE + "] - (PV : "
-                    + canardAleatoire.getPointsDeVieCombat() + "/" + canardAleatoire.getPointsDeVie() + ")");
-
-            System.out.println(canardJoueur.getNom() + " (" + canardJoueur.getType() + ") [Niveau "
-                    + canardJoueur.getNiveau() + "] "
-                    + "[Energie : " + canardJoueur.getEnergie() + "/" + Canard.MAX_ENERGIE + "] - (PV : "
-                    + canardJoueur.getPointsDeVieCombat() + "/" + canardJoueur.getPointsDeVie() + ")");
+            afficherEtatCanard(canardAleatoire);
+            afficherEtatCanard(canardJoueur);
 
             choix = "Attente";
             choixCapacite = "Attente";
+
             if (combat.getAttaquant() == canardAleatoire) {
                 // Tour du canard adverse
+                Capacite capaciteCanardAleatoire = canardAleatoire.selectionnerCapaciteAuHasard();
+                if (capaciteCanardAleatoire.equals(null)) {
+                    System.out.println(canardAleatoire.getNom() + " n'a pas assez d'énergie pour attaquer");
+                } else {
+                    combat.jouerPhase(capaciteCanardAleatoire);
+                }
             } else {
+
                 // Tour du canard du joueur
                 System.out.println("Que doit faire " + canardJoueur.getNom() + " ?");
-                // Tant que le joueur n'a pas sélectionné un choix valable
-                while (choix != "1") {
+
+                while (!choix.equals("1")) {
                     System.out.println("1. Attaque");
                     System.out.print(">>> ");
                     choix = scanner.nextLine();
+
                     switch (choix) {
                         case "1":
                             // Le joueur choisi d'attaquer
+                            Capacite capaciteJoueur = (Capacite) null;
                             while (!capacitesValides.contains(choixCapacite)) {
                                 System.out.println("Sélectionner une capacité (" + canardJoueur.getEnergie() + " PE/"
                                         + Canard.MAX_ENERGIE + ")");
@@ -261,19 +265,33 @@ public class Menu {
                                 canardJoueur.afficherCapacite();
                                 System.out.print(">>> ");
                                 choixCapacite = scanner.nextLine();
+
                                 switch (choixCapacite) {
                                     case "0":
                                         break;
                                     case "1":
-                                        System.out.println(canardJoueur.getNom() + " utilise "
-                                                + canardJoueur.getCapacites().get(0).getNom());
-                                        canardJoueur.attaquer(canardAleatoire, canardJoueur.getCapacites().get(0));
+                                        capaciteJoueur = canardJoueur.getCapacites().get(0);
                                         break;
                                     case "2":
+                                        if (canardJoueur.getCapacites().size() >= 2) {
+                                            capaciteJoueur = canardJoueur.getCapacites().get(1);
+                                        } else {
+                                            System.out.println("Capacité non disponible");
+                                        }
                                         break;
                                     case "3":
+                                        if (canardJoueur.getCapacites().size() >= 3) {
+                                            capaciteJoueur = canardJoueur.getCapacites().get(2);
+                                        } else {
+                                            System.out.println("Capacité non disponible");
+                                        }
                                         break;
                                     case "4":
+                                        if (canardJoueur.getCapacites().size() == 4) {
+                                            capaciteJoueur = canardJoueur.getCapacites().get(3);
+                                        } else {
+                                            System.out.println("Capacité non disponible");
+                                        }
                                         break;
                                     case "5":
                                         break;
@@ -281,12 +299,34 @@ public class Menu {
                                         break;
                                 }
                             }
+                            combat.jouerPhase(capaciteJoueur);
+                            break;
                         default:
                             System.out.println("Commande inconnue !");
                             break;
                     }
                 }
             }
+            combat.changerAttaquant();
+            if (combat.getTour() % 2 == 0) {
+                combat.finDeTour();
+            }
         }
+
+        // La fin du combat
+        afficherEtatCanard(canardAleatoire);
+        afficherEtatCanard(canardJoueur);
+        if (canardJoueur.getPointsDeVieCombat() <= 0) {
+            System.out.println(canardJoueur.getNom() + " a perdu le combat !");
+        } else if (canardAleatoire.getPointsDeVieCombat() <= 0) {
+            System.out.println(canardAleatoire.getNom() + " a perdu le combat !");
+        }
+    }
+
+    private static void afficherEtatCanard(Canard canard) {
+        System.out.println(canard.getNom() + " (" + canard.getType() + ") [Niveau "
+                + canard.getNiveau() + "] "
+                + "[Energie : " + canard.getEnergie() + "/" + Canard.MAX_ENERGIE + "] - (PV : "
+                + canard.getPointsDeVieCombat() + "/" + canard.getPointsDeVie() + ")");
     }
 }

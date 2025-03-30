@@ -4,13 +4,14 @@ import java.util.Random;
 
 import combat.capacite.Capacite;
 import modele.canard.Canard;
+import modele.canard.TypeCanard;
 
 public class Combat {
 
-    public static final float COEFF_EQUILIBRAGE = 0.1f; // Coefficient d'équilibrage pour les dégâts infligés
+    public static final float COEFF_EQUILIBRAGE = 0.05f; // Coefficient d'équilibrage pour les dégâts infligés
 
     private Canard attaquant, cible;
-    private int tour; // Tour actuel du combat
+    private int tour; // Tour actuel du combat ( Un tour = une attaque )
 
     // ---------- CONSTRUCTEURS ---------- //
 
@@ -80,7 +81,15 @@ public class Combat {
      * Joue une phase de combat
      */
     public void jouerPhase(Capacite capacite) {
+        System.out.print(this.attaquant.getNom() + " utilise " + capacite.getNom() + " !");
+        if (TypeCanard.getMultiplicateur(this.attaquant.getType(), this.cible.getType()) == 1.5) {
+            System.out.print(" C'est super efficace !");
+        } else if (TypeCanard.getMultiplicateur(this.attaquant.getType(), this.cible.getType()) == 0.5) {
+            System.out.print(" Ce n'est pas très efficace...");
+        }
+        System.out.print("\n");
         this.attaquant.attaquer(this.cible, capacite);
+        this.tour++;
     }
 
     /*
@@ -89,7 +98,6 @@ public class Combat {
     public void finDeTour() {
         effetFinDeTour(attaquant);
         effetFinDeTour(cible);
-        this.tour++;
     }
 
     private void effetFinDeTour(Canard canard) {
@@ -111,7 +119,7 @@ public class Combat {
      * Retourne true si la cible est KO
      */
     public boolean combatTermine() {
-        return this.cible.estKO();
+        return this.cible.estKO() || this.attaquant.estKO();
     }
 
 }

@@ -2,6 +2,7 @@ package modele.canard;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import combat.Combat;
 import combat.Statut;
@@ -300,6 +301,19 @@ public abstract class Canard {
      */
     public void retirerStatut() {
         this.statut = Statut.NEUTRE;
+    }
+
+    public Capacite selectionnerCapaciteAuHasard() {
+        Random random = new Random();
+        List<Capacite> capacitesDisponibles = new ArrayList<>();
+        for (Capacite c : this.capacites) {
+            if (c.getCout() <= this.energie)
+                capacitesDisponibles.add(c);
+        }
+        if (capacitesDisponibles.isEmpty())
+            return null;
+
+        return capacitesDisponibles.get(random.nextInt(capacitesDisponibles.size()));
     }
 
     /*
