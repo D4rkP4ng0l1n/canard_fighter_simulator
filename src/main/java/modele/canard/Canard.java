@@ -278,7 +278,7 @@ public abstract class Canard {
             System.out.println("Coup critique ! ");
             this.chanceCoupCritique = CHANCE_COUP_CRITIQUE; // Dans le cas où le canard aurait reçu un boost
         }
-
+        this.energie -= capacite.getCout();
         // Infliger les degats
         autreCanard.subirDegats((int) degats);
     }
