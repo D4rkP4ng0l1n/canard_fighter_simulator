@@ -6,6 +6,10 @@ import combat.capacite.Capacite;
 import modele.canard.Canard;
 import modele.canard.TypeCanard;
 
+/**
+ * Classe représentant un combat entre deux canards.
+ * Gère les tours, les attaques, et les effets de fin de phase.
+ */
 public class Combat {
 
     public static final float COEFF_EQUILIBRAGE = 0.2f; // Coefficient d'équilibrage pour les dégâts infligés
@@ -13,13 +17,12 @@ public class Combat {
 
     private Canard attaquant, cible;
 
-    // ---------- CONSTRUCTEURS ---------- //
-
-    /*
-     * Constructeur de la classe Combat. Il prend en paramètre deux objets Canard et
-     * attribut à chacun leur rôle pour le premier tour. Le canard le plus rapide
-     * sera le premier attaquant. Si leur vitesse est la même, le choix du premier
-     * attaquant sera fait au hasard.
+    /**
+     * Constructeur de la classe Combat.
+     * Initialise les statistiques des canards et détermine le premier attaquant.
+     *
+     * @param canard1 Le premier canard.
+     * @param canard2 Le second canard.
      */
     public Combat(Canard canard1, Canard canard2) {
         canard1.initialiserStatistiquesCombat();
@@ -42,27 +45,26 @@ public class Combat {
         }
     }
 
-    // ---------- GETTERS ---------- //
-
-    /*
-     * Retourne l'attaquant du combat
+    /**
+     * Retourne le canard attaquant.
+     *
+     * @return Le canard attaquant.
      */
     public Canard getAttaquant() {
         return this.attaquant;
     }
 
-    /*
-     * Retourne le canard cible du combat
+    /**
+     * Retourne le canard cible.
+     *
+     * @return Le canard cible.
      */
     public Canard getCible() {
         return this.cible;
     }
 
-    // ---------- METHODES ---------- //
-
-    /*
-     * Change l'attaquant du combat. Le canard qui était attaquant devient le canard
-     * attaqué et vice versa.
+    /**
+     * Change l'attaquant et la cible.
      */
     public void changerAttaquant() {
         Canard temp = this.attaquant;
@@ -70,8 +72,10 @@ public class Combat {
         this.cible = temp;
     }
 
-    /*
-     * Joue une phase de combat
+    /**
+     * Joue une phase de combat où l'attaquant utilise une capacité sur la cible.
+     *
+     * @param capacite La capacité utilisée par l'attaquant.
      */
     public void jouerPhase(Capacite capacite) {
         System.out.print(this.attaquant.getNom() + " utilise " + capacite.getNom() + " !");
@@ -86,8 +90,8 @@ public class Combat {
         finDePhase();
     }
 
-    /*
-     * Applique tous les effets de STATUT de fin de tour et incrémente le tour de 1
+    /**
+     * Applique les effets de fin de phase (statuts, régénération d'énergie).
      */
     private void finDePhase() {
         effetFinDeTour(attaquant);
@@ -111,8 +115,10 @@ public class Combat {
         }
     }
 
-    /*
-     * Retourne true si la cible est KO
+    /**
+     * Retourne true si le combat est terminé (un des canards est KO).
+     *
+     * @return true si le combat est terminé, false sinon.
      */
     public boolean combatTermine() {
         return this.cible.estKO() || this.attaquant.estKO();
