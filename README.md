@@ -1,3 +1,148 @@
+### UML ###
+
+classDiagram
+    %% Classes principales
+    class Canard {
+        <<abstract>>
+        -String nom
+        -TypeCanard type
+        -Statut statut
+        -int niveau
+        -int totalExpPourProchainNiveau
+        -int totalExp
+        -List~Integer~ stats
+        -List~Integer~ statsEnCombat
+        -int energie
+        -List~Capacite~ capacites
+        -CapaciteSpeciale capaciteSpeciale
+        -boolean capaciteSpecialeDisponible
+        -int chanceCoupCritique
+        +attaquer(Canard autreCanard, Capacite capacite)
+        +subirDegats(int degats)
+        +soigner(int soin)
+        +initialiserStatistiquesCombat()
+        +regenererEnergie(int energie)
+        +appliquerEffet(Effet effet, double montantEffet)
+        +appliquerEffetStatut(Statut statut)
+        +retirerStatut()
+        +selectionnerCapaciteAuHasard() Capacite
+        +gagnerExperience(Canard canardVaincu)
+        +gagnerExperience(int exp)
+        +estKO() boolean
+        +utiliserCapaciteSpeciale(Canard canardCible)
+        +afficherCapacite()
+        +toString() String
+        <<abstract>> initStats()
+        <<abstract>> calculerStats()
+    }
+
+    %% Sous-classes de Canard
+    Canard <|-- CanardEau
+    Canard <|-- CanardFeu
+    Canard <|-- CanardGlace
+    Canard <|-- CanardElectrique
+    Canard <|-- CanardSol
+    Canard <|-- CanardToxique
+    Canard <|-- CanardVent
+
+    %% Capacités
+    class Capacite {
+        <<enumeration>>
+        +getNom() String
+        +getType() TypeCanard
+        +getNiveauApprentissage() int
+        +getCout() int
+        +getDegats() int
+        +getPrecision() int
+        +getEffet() Effet
+    }
+
+    %% Effets
+    class Effet {
+        <<enumeration>>
+        STATUT
+        CRIT
+        SUPER_EFFICACE
+        SOIN
+        SOIN_STATUT
+        BOOST_ATTAQUE
+        BOOST_VITESSE
+    }
+
+    %% Statuts
+    class Statut {
+        <<enumeration>>
+        NEUTRE
+        BRULURE
+        GEL
+        PARALYSIE
+        EMPOISONNEMENT
+        SURCHARGE
+    }
+
+    %% Types de Canards
+    class TypeCanard {
+        <<enumeration>>
+        EAU
+        FEU
+        GLACE
+        VENT
+        TOXIQUE
+        ELECTRIQUE
+        SOL
+        +getMultiplicateur(TypeCanard attaquant, TypeCanard cible) double
+    }
+
+    %% Capacités spéciales
+    class CapaciteSpeciale {
+        <<interface>>
+        +activer(Canard canardActif, Canard canardCible)
+        +toString() String
+    }
+
+    CapaciteSpeciale <|.. CapaciteSpecialeEau
+    CapaciteSpeciale <|.. CapaciteSpecialeFeu
+    CapaciteSpeciale <|.. CapaciteSpecialeGlace
+    CapaciteSpeciale <|.. CapaciteSpecialeElectrique
+    CapaciteSpeciale <|.. CapaciteSpecialeSol
+    CapaciteSpeciale <|.. CapaciteSpecialeToxique
+    CapaciteSpeciale <|.. CapaciteSpecialeVent
+
+    %% Combat
+    class Combat {
+        -Canard attaquant
+        -Canard cible
+        +jouerPhase(Capacite capacite)
+        +changerAttaquant()
+        +combatTermine() boolean
+    }
+
+    %% Objets
+    class Objet {
+        -String nom
+        -String description
+        +Objet(String nom, String description)
+        +getNom() String
+        +getDescription() String
+        +utiliser(Canard canard)
+        +toString() String
+    }
+
+    Objet <|-- PotionEnergie
+    Objet <|-- PotionSoin
+
+    %% Relations
+    Canard --> TypeCanard
+    Canard --> Capacite
+    Canard --> CapaciteSpeciale
+    Canard --> Statut
+    Canard --> Effet
+    Objet --> Canard : utilise
+    Combat --> Canard
+    Combat --> Capacite
+    Combat --> Statut
+
+
 ### 1. **Quelles classes pourraient être abstraites ?**
 
 Les classes `Canard` et `Objet` peuvent être abstraites. En effet, un canard en tant que tel n'existe pas. Pour exister, il doit être défini par un type, qui est représenté par les différentes classes filles telles que `CanardFeu`, `CanardEau`, etc. Il en est de même pour un objet.
