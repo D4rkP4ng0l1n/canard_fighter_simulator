@@ -15,6 +15,7 @@ public class Musique {
     public static final String MUSIQUE_MENU = "src/main/resources/PortYoneuve.wav";
     public static final String MUSIQUE_COMBAT = "src/main/resources/CombatSauvage.wav";
     public static final String MUSIQUE_COMBAT_DRESSEUR = "src/main/resources/CynthiaBattle.wav";
+    public static final String MUSIQUE_ROGUELIKE = "src/main/resources/GeneriquePokemon.wav";
 
     private Clip clip;
     private String currentMusic;

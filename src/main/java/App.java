@@ -2,6 +2,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import modele.canard.Canard;
+import modele.objet.Objet;
+import modele.objet.PotionEnergie;
+import modele.objet.PotionSoin;
 import ui.Menu;
 
 public class App {
@@ -31,6 +34,18 @@ public class App {
                     }
                     break;
                 case 5:
+                    List<Objet> potions = new ArrayList<>();
+
+                    // Ajouter 3 potions de soin
+                    potions.add(new PotionSoin(50));
+                    potions.add(new PotionSoin(100));
+                    potions.add(new PotionSoin(150));
+
+                    // Ajouter 3 potions d'énergie
+                    potions.add(new PotionEnergie(5));
+                    potions.add(new PotionEnergie(10));
+                    potions.add(new PotionEnergie(15));
+                    Menu.modeRoguelike(canards, potions);
                     break;
             }
         }

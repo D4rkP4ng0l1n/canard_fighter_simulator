@@ -11,10 +11,14 @@ import combat.Combat;
 import combat.capacite.Capacite;
 import modele.canard.Canard;
 import modele.canard.CanardEau;
+import modele.canard.CanardElectrique;
 import modele.canard.CanardFeu;
 import modele.canard.CanardGlace;
+import modele.canard.CanardSol;
+import modele.canard.CanardToxique;
 import modele.canard.CanardVent;
 import modele.canard.TypeCanard;
+import modele.objet.Objet;
 
 public class Menu {
 
@@ -117,6 +121,15 @@ public class Menu {
                 break;
             case GLACE:
                 canard = new CanardGlace(nom);
+                break;
+            case TOXIQUE:
+                canard = new CanardToxique(nom);
+                break;
+            case ELECTRIQUE:
+                canard = new CanardElectrique(nom);
+                break;
+            case SOL:
+                canard = new CanardSol(nom);
                 break;
         }
 
@@ -242,6 +255,12 @@ public class Menu {
                 return new CanardGlace("CanardGlace", niveau);
             case VENT:
                 return new CanardVent("CanardVent", niveau);
+            case TOXIQUE:
+                return new CanardToxique("CanardToxique", niveau);
+            case ELECTRIQUE:
+                return new CanardElectrique("CanardElectrique", niveau);
+            case SOL:
+                return new CanardSol("CanardSol", niveau);
             default:
                 throw new IllegalStateException("Type de canard inconnu : " + randomType);
         }
@@ -550,5 +569,166 @@ public class Menu {
         System.out.println(canard.getNom() + " oublie " + canard.getCapacites().get(position).getNom() + " et apprend "
                 + capacite.getNom());
         canard.setCapacite(capacite, position);
+    }
+
+    public static void modeRoguelike(List<Canard> equipeJoueur, List<Objet> objets) {
+        System.out.println(" ---------- MODE ROGUELIKE ---------- ");
+        musique.playMusic(Musique.MUSIQUE_ROGUELIKE);
+
+        if (equipeJoueur.isEmpty()) {
+            System.out.println("Vous n'avez aucun canard pour commencer le mode roguelike !");
+            return;
+        }
+
+        while (!equipeJoueur.isEmpty()) {
+            System.out.println("\nVotre équipe actuelle :");
+            afficherListCanards(equipeJoueur);
+
+            System.out.println("\nSouhaitez-vous utiliser un objet avant le prochain combat ? (oui/non)");
+            System.out.print(">>> ");
+            String choixObjet = scanner.nextLine().toLowerCase();
+            if (choixObjet.equals("oui")) {
+                utiliserObjet(equipeJoueur, objets);
+            }
+
+            System.out.println("\nUn nouvel adversaire apparaît !");
+            Canard adversaire = genererCanardAleatoire(equipeJoueur.get(0).getNiveau());
+            System.out.println("Adversaire : " + adversaire.getNom() + " (" + adversaire.getType() + ")");
+
+            Combat combat = new Combat(equipeJoueur.get(0), adversaire);
+            while (!combat.combatTermine()) {
+                afficherEtatCanard(combat.getAttaquant());
+                afficherEtatCanard(combat.getCible());
+
+                if (combat.getAttaquant() == adversaire) {
+                    // Tour de l'adversaire
+                    Capacite capaciteAdversaire = adversaire.selectionnerCapaciteAuHasard();
+                    if (capaciteAdversaire != null) {
+                        combat.jouerPhase(capaciteAdversaire);
+                    } else {
+                        System.out.println(adversaire.getNom() + " n'a pas assez d'énergie pour attaquer !");
+                    }
+                } else {
+                    // Tour du joueur
+                    System.out.println("Que doit faire " + combat.getAttaquant().getNom() + " ?");
+                    System.out.println("1. Attaquer");
+                    if (equipeJoueur.size() > 1) {
+                        System.out.println("2. Changer de Canard");
+                    }
+                    System.out.print(">>> ");
+                    String choix = scanner.nextLine();
+
+                    if (choix.equals("2") && equipeJoueur.size() > 1) {
+                        System.out.println("Choisissez un nouveau canard :");
+                        equipeJoueur.remove(combat.getAttaquant());
+                        Canard nouveauCanard = selectionnerUnCanard(equipeJoueur);
+                        equipeJoueur.add(0, nouveauCanard);
+                        combat = new Combat(nouveauCanard, adversaire);
+                        continue;
+                    }
+
+                    Set<String> capacitesValides = new HashSet<>();
+                    capacitesValides.add("0");
+                    for (int i = 0; i < combat.getAttaquant().getCapacites().size(); i++) {
+                        capacitesValides.add(String.valueOf(i + 1)); // Pour un affichage 1, 2, 3, 4
+                    }
+                    capacitesValides.add("5");
+                    String choixCapacite = "-1";
+                    Capacite capaciteJoueur = (Capacite) null;
+                    while (!capacitesValides.contains(choixCapacite)) {
+                        System.out.println("Sélectionner une capacité (" + combat.getAttaquant().getEnergie() + " PE/"
+                                + Canard.MAX_ENERGIE + ")");
+                        System.out.println("0. Retour");
+                        combat.getAttaquant().afficherCapacite();
+                        System.out.print(">>> ");
+                        choixCapacite = scanner.nextLine();
+
+                        switch (choixCapacite) {
+                            case "0":
+                                break;
+                            case "1":
+                                capaciteJoueur = combat.getAttaquant().getCapacites().get(0);
+                                break;
+                            case "2":
+                                if (combat.getAttaquant().getCapacites().size() >= 2) {
+                                    capaciteJoueur = combat.getAttaquant().getCapacites().get(1);
+                                } else {
+                                    System.out.println("Capacité non disponible");
+                                }
+                                break;
+                            case "3":
+                                if (combat.getAttaquant().getCapacites().size() >= 3) {
+                                    capaciteJoueur = combat.getAttaquant().getCapacites().get(2);
+                                } else {
+                                    System.out.println("Capacité non disponible");
+                                }
+                                break;
+                            case "4":
+                                if (combat.getAttaquant().getCapacites().size() == 4) {
+                                    capaciteJoueur = combat.getAttaquant().getCapacites().get(3);
+                                } else {
+                                    System.out.println("Capacité non disponible");
+                                }
+                                break;
+                            case "5":
+                                combat.getAttaquant().utiliserCapaciteSpeciale(combat.getCible());
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    if (!choixCapacite.equals("5"))
+                        combat.jouerPhase(capaciteJoueur);
+                }
+                combat.changerAttaquant();
+            }
+
+            if (adversaire.estKO()) {
+                System.out.println(adversaire.getNom() + " a été vaincu !");
+                for (Canard c : equipeJoueur) {
+                    c.gagnerExperience(adversaire);
+                }
+                System.out.println("Souhaitez-vous recruter " + adversaire.getNom() + " dans votre équipe ? (oui/non)");
+                System.out.print(">>> ");
+                String choixRecrutement = scanner.nextLine().toLowerCase();
+                if (choixRecrutement.equals("oui") && equipeJoueur.size() < 3) {
+                    equipeJoueur.add(adversaire);
+                    System.out.println(adversaire.getNom() + " a rejoint votre équipe !");
+                } else if (equipeJoueur.size() >= 3) {
+                    System.out.println("Votre équipe est déjà complète (3 canards maximum) !");
+                }
+            } else {
+                System.out.println(combat.getAttaquant().getNom() + " a été vaincu !");
+                equipeJoueur.remove(combat.getAttaquant());
+            }
+        }
+
+        System.out.println("Tous vos canards sont KO. Fin du mode roguelike !");
+    }
+
+    private static void utiliserObjet(List<Canard> equipeJoueur, List<Objet> objets) {
+        System.out.println("Liste des objets disponibles :");
+        for (int i = 0; i < objets.size(); i++) {
+            System.out.println((i + 1) + ". " + objets.get(i));
+        }
+        System.out.print("Choisissez un objet à utiliser (0 pour annuler) : ");
+        String choixObjet = scanner.nextLine();
+        try {
+            int indexObjet = Integer.parseInt(choixObjet) - 1;
+            if (indexObjet >= 0 && indexObjet < objets.size()) {
+                Objet objet = objets.get(indexObjet);
+                System.out.println("Vous avez choisi d'utiliser : " + objet);
+                for (Canard c : equipeJoueur) {
+                    objet.utiliser(c);
+                }
+                objets.remove(objet);
+            } else if (indexObjet == -1) {
+                System.out.println("Annulation de l'utilisation d'objet.");
+            } else {
+                System.out.println("Choix invalide.");
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Entrée invalide, merci d'entrer un nombre !");
+        }
     }
 }
