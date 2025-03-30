@@ -220,6 +220,10 @@ public abstract class Canard {
         this.statut = statut;
     }
 
+    public void setCapaciteSpecialeDisponible() {
+        this.capaciteSpecialeDisponible = true;
+    }
+
     /*
      * Permet au canard d'apprendre une capacité. Si il possède déjà 4 capacités
      * alors l'utilisateur devra en choisir une à supprimer
@@ -280,6 +284,15 @@ public abstract class Canard {
      * Methodes permettant a un canard d'attaquer un autre canard
      */
     public void attaquer(Canard autreCanard, Capacite capacite) {
+        if (this.statut == Statut.GEL) {
+            System.out.println(this.nom + " est gelé...");
+            Random random = new Random();
+            if (random.nextInt(0, 2) != 0) {
+                System.out.println("Il n'a pas pu attaqué");
+                return;
+            }
+            System.out.println("Il a réussi a attaquer !");
+        }
         // Calcul des dégâts
         double degats = (this.getPointsAttaque() * Combat.COEFF_EQUILIBRAGE) * capacite.getDegats()
                 * TypeCanard.getMultiplicateur(capacite.getType(), autreCanard.getType());
@@ -352,6 +365,7 @@ public abstract class Canard {
     public void appliquerEffetStatut(Statut statut) {
         if (this.statut == Statut.NEUTRE) {
             this.statut = statut;
+            System.out.println(this.nom + " subit " + statut);
         }
     }
 
@@ -443,10 +457,16 @@ public abstract class Canard {
     // ---------- METHODES D'AFFICHAGE ---------- //
 
     public void afficherCapacite() {
-        for (int i = 0; i < this.capacites.size(); i++) {
-            System.out.println((i + 1) + ". " + this.capacites.get(i));
+        List<Capacite> capacitesDisponibles = new ArrayList<>();
+        for (Capacite c : this.capacites) {
+            if (c.getCout() <= this.energie)
+                capacitesDisponibles.add(c);
         }
-        System.out.println("5. " + this.capaciteSpeciale);
+        for (int i = 0; i < capacitesDisponibles.size(); i++) {
+            System.out.println((i + 1) + ". " + capacitesDisponibles.get(i));
+        }
+        if (capaciteSpecialeDisponible())
+            System.out.println("5. " + this.capaciteSpeciale);
     }
 
     @Override

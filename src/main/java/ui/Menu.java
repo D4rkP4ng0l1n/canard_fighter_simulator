@@ -188,33 +188,32 @@ public class Menu {
         return canards.get(indiceCanard);
     }
 
-    private static Canard genererCanardAleatoire() {
+    private static Canard genererCanardAleatoire(int niveau) {
         Random random = new Random();
         TypeCanard[] types = TypeCanard.values();
         TypeCanard randomType = types[random.nextInt(types.length)];
         switch (randomType) {
             case EAU:
-                return new CanardEau("CanardEau");
+                return new CanardEau("CanardEau", niveau);
             case FEU:
-                return new CanardFeu("CanardFeu");
+                return new CanardFeu("CanardFeu", niveau);
             case GLACE:
-                return new CanardGlace("CanardGlace");
+                return new CanardGlace("CanardGlace", niveau);
             case VENT:
-                return new CanardVent("CanardVent");
+                return new CanardVent("CanardVent", niveau);
             default:
                 throw new IllegalStateException("Type de canard inconnu : " + randomType);
         }
     }
 
     private static void afficherCombat(List<Canard> canards, String musiqueCombat) {
-
         musique.playMusic(musiqueCombat);
 
         System.out.println(" ---------- COMBAT ---------- ");
         musique.playMusic(Musique.MUSIQUE_COMBAT);
 
         Canard canardJoueur = canards.get(0);
-        Canard canardAleatoire = genererCanardAleatoire();
+        Canard canardAleatoire = genererCanardAleatoire(canardJoueur.getNiveau());
         Combat combat = new Combat(canards.get(0), canardAleatoire);
 
         // On set une liste pour savoir combien de capacites possede le canard du joueur
@@ -300,7 +299,7 @@ public class Menu {
                                         break;
                                 }
                             }
-                            if (choixCapacite != "5")
+                            if (!choixCapacite.equals("5"))
                                 combat.jouerPhase(capaciteJoueur);
                             break;
                         default:
@@ -324,6 +323,7 @@ public class Menu {
             System.out.println(canardAleatoire.getNom() + " a perdu le combat !");
             canardJoueur.gagnerExperience(canardAleatoire);
         }
+        canardJoueur.setCapaciteSpecialeDisponible();
     }
 
     private static void afficherEtatCanard(Canard canard) {
