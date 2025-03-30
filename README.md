@@ -1,5 +1,6 @@
 ### UML ###
 
+```mermaid
 classDiagram
     %% Classes principales
     class Canard {
@@ -141,7 +142,7 @@ classDiagram
     Combat --> Canard
     Combat --> Capacite
     Combat --> Statut
-
+```
 
 ### 1. **Quelles classes pourraient être abstraites ?**
 
