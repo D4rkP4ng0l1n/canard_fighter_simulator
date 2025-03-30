@@ -24,3 +24,10 @@ Chaque nouveau type de canard nécessite la création d'une nouvelle sous-classe
 Pour rajouter les effets de statuts, j'ai fait une enumeration comportant les differents statuts que je souhaitais implémenter. Ensuite, pour appliquer ces effets, cela se fait via la classe Canard où l'on va appliquer un statut à un attribut d'instance. Les effets des Statuts quand à eux vont se faire soit à la fin du tour durant un combat, soit pendant l'attaque selon le statut.
 Pour les points d'énergies, on regarde si le canard qui attaque en possède assez pour lancer son attaque. Si il n'a pas assez de points alors l'attaque échoue. Pour se faire, dans la classe Canard, il y a un attribut qui est initialisé avec la valeur d'une constante correspondant au maximum de point d'Energie
 Pour le coup critique, j'ai utilisé une constante qui est initialisé à 10%. A chaque attaque, on génère un nombre entre 1 et 10, si le nombre est 1 alors l'attaque recevra un multiplicateur pour le coup critique.
+
+
+### Réalisations BONUS ###
+
+- Un combat 3 vs 3
+- Un "roguelike" ( Un enchainement de combat jusqu'à la mort de toute l'équipe )
+- Des musiques
