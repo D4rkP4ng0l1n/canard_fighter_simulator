@@ -21,6 +21,8 @@ public class Combat {
      * attaquant sera fait au hasard.
      */
     public Combat(Canard canard1, Canard canard2) {
+        canard1.initialiserStatistiquesCombat();
+        canard2.initialiserStatistiquesCombat();
         if (canard1.getVitesse() > canard2.getVitesse()) {
             this.attaquant = canard1;
             this.cible = canard2;
@@ -62,45 +64,54 @@ public class Combat {
         return this.tour;
     }
 
-    // ---------- SETTERS ---------- //
-
-    /*
-     * Set le canard attaquant du combat
-     */
-    private void setAttaquant(Canard canard) {
-        this.attaquant = canard;
-    }
-
-    /*
-     * Set le canard cible du combat
-     */
-    private void setCible(Canard canard) {
-        this.cible = canard;
-    }
-
     // ---------- METHODES ---------- //
 
     /*
-     * Change le tour du combat. Le canard qui était attaquant devient le canard
-     * attaqué et vice versa. Le tour est incrémenté de 1.
+     * Change l'attaquant du combat. Le canard qui était attaquant devient le canard
+     * attaqué et vice versa.
      */
-    private void changerTour() {
+    public void changerAttaquant() {
         Canard temp = this.attaquant;
         this.attaquant = this.cible;
         this.cible = temp;
-        this.tour++;
     }
 
     /*
-     * Joue un tour de combat
+     * Joue une phase de combat
      */
-    public void jouerTour(Capacite capacite) {
+    public void jouerPhase(Capacite capacite) {
         this.attaquant.attaquer(this.cible, capacite);
-        if (this.cible.estKO()) {
-            System.out.println(this.cible + " a été mis KO !");
-        } else {
-            this.changerTour();
+    }
+
+    /*
+     * Applique tous les effets de STATUT de fin de tour et incrémente le tour de 1
+     */
+    public void finDeTour() {
+        effetFinDeTour(attaquant);
+        effetFinDeTour(cible);
+        this.tour++;
+    }
+
+    private void effetFinDeTour(Canard canard) {
+        switch (attaquant.getStatut()) {
+            case BRULURE:
+                System.out.println(canard.getNom() + " souffre de sa brûlure");
+                canard.subirDegats((int) (canard.getPointsDeVieCombat() * (1 - Statut.DEGATS_BRULURE)));
+                break;
+            case EMPOISONNEMENT:
+                System.out.println(canard.getNom() + " souffre du poison");
+                canard.subirDegats((int) (canard.getPointsDeVieCombat() * (1 - Statut.DEGATS_POISON)));
+                break;
+            default:
+                break;
         }
+    }
+
+    /*
+     * Retourne true si la cible est KO
+     */
+    public boolean combatTermine() {
+        return this.cible.estKO();
     }
 
 }

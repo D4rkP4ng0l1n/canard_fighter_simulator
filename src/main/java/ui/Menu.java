@@ -1,9 +1,13 @@
 package ui;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
+import java.util.Set;
 
+import combat.Combat;
 import modele.canard.Canard;
 import modele.canard.CanardEau;
 import modele.canard.CanardFeu;
@@ -14,9 +18,11 @@ import modele.canard.TypeCanard;
 public class Menu {
 
     private static Scanner scanner = new Scanner(System.in);
+    private static Musique musique = new Musique();
 
     public static int menuPrincipal() {
 
+        musique.playMusic(Musique.MUSIQUE_MENU);
         int codeRetour = -1;
 
         System.out.println(" ---------- MENU PRINCIPAL ---------- ");
@@ -124,13 +130,14 @@ public class Menu {
             System.out.print(">>> ");
 
             choix = scanner.nextLine();
+            List<Canard> canardsCombat = new ArrayList<>();
 
             switch (choix) {
                 case "0":
                     break;
                 case "1":
-                    Canard canardCombat = selectionnerUnCanard(canards);
-                    System.out.println(canardCombat);
+                    canardsCombat.add(selectionnerUnCanard(canards));
+                    afficherCombat(canardsCombat, Musique.MUSIQUE_COMBAT);
                     break;
                 case "2":
                     if (canards.size() < 3) {
@@ -138,7 +145,6 @@ public class Menu {
                         break;
                     }
                     List<Canard> canardsAChoisir = new ArrayList<>(canards);
-                    List<Canard> canardsCombat = new ArrayList<>(3);
                     for (int i = 0; i < 3; i++) {
                         canardsCombat.add(selectionnerUnCanard(canardsAChoisir));
                         canardsAChoisir.remove(canardsCombat.get(i));
@@ -181,7 +187,106 @@ public class Menu {
         return canards.get(indiceCanard);
     }
 
-    private void afficherCombat(List<Canard> canards) {
+    private static Canard genererCanardAleatoire() {
+        Random random = new Random();
+        TypeCanard[] types = TypeCanard.values();
+        TypeCanard randomType = types[random.nextInt(types.length)];
+        switch (randomType) {
+            case EAU:
+                return new CanardEau("CanardEau");
+            case FEU:
+                return new CanardFeu("CanardFeu");
+            case GLACE:
+                return new CanardGlace("CanardGlace");
+            case VENT:
+                return new CanardVent("CanardVent");
+            default:
+                throw new IllegalStateException("Type de canard inconnu : " + randomType);
+        }
+    }
 
+    private static void afficherCombat(List<Canard> canards, String musiqueCombat) {
+
+        musique.playMusic(musiqueCombat);
+
+        System.out.println(" ---------- COMBAT ---------- ");
+        musique.playMusic(Musique.MUSIQUE_COMBAT);
+
+        Canard canardJoueur = canards.get(0);
+        Canard canardAleatoire = genererCanardAleatoire();
+        Combat combat = new Combat(canards.get(0), canardAleatoire);
+
+        // On set une liste pour savoir combien de capacites possede le canard du joueur
+        Set<String> capacitesValides = new HashSet<>();
+        capacitesValides.add("0");
+        for (int i = 0; i < canardJoueur.getCapacites().size(); i++) {
+            capacitesValides.add(String.valueOf(i + 1)); // Pour un affichage 1, 2, 3, 4
+        }
+        capacitesValides.add("5");
+
+        String choix, choixCapacite;
+
+        System.out.println(canardAleatoire.getNom() + " sauvage apparait !");
+        while (!combat.combatTermine()) {
+
+            System.out.println(canardAleatoire.getNom() + " (" + canardAleatoire.getType() + ") [Niveau "
+                    + canardAleatoire.getNiveau() + "] "
+                    + "[Energie : " + canardAleatoire.getEnergie() + "/" + Canard.MAX_ENERGIE + "] - (PV : "
+                    + canardAleatoire.getPointsDeVieCombat() + "/" + canardAleatoire.getPointsDeVie() + ")");
+
+            System.out.println(canardJoueur.getNom() + " (" + canardJoueur.getType() + ") [Niveau "
+                    + canardJoueur.getNiveau() + "] "
+                    + "[Energie : " + canardJoueur.getEnergie() + "/" + Canard.MAX_ENERGIE + "] - (PV : "
+                    + canardJoueur.getPointsDeVieCombat() + "/" + canardJoueur.getPointsDeVie() + ")");
+
+            choix = "Attente";
+            choixCapacite = "Attente";
+            if (combat.getAttaquant() == canardAleatoire) {
+                // Tour du canard adverse
+            } else {
+                // Tour du canard du joueur
+                System.out.println("Que doit faire " + canardJoueur.getNom() + " ?");
+                // Tant que le joueur n'a pas sélectionné un choix valable
+                while (choix != "1") {
+                    System.out.println("1. Attaque");
+                    System.out.print(">>> ");
+                    choix = scanner.nextLine();
+                    switch (choix) {
+                        case "1":
+                            // Le joueur choisi d'attaquer
+                            while (!capacitesValides.contains(choixCapacite)) {
+                                System.out.println("Sélectionner une capacité (" + canardJoueur.getEnergie() + " PE/"
+                                        + Canard.MAX_ENERGIE + ")");
+                                System.out.println("0. Retour");
+                                canardJoueur.afficherCapacite();
+                                System.out.print(">>> ");
+                                choixCapacite = scanner.nextLine();
+                                switch (choixCapacite) {
+                                    case "0":
+                                        break;
+                                    case "1":
+                                        System.out.println(canardJoueur.getNom() + " utilise "
+                                                + canardJoueur.getCapacites().get(0).getNom());
+                                        canardJoueur.attaquer(canardAleatoire, canardJoueur.getCapacites().get(0));
+                                        break;
+                                    case "2":
+                                        break;
+                                    case "3":
+                                        break;
+                                    case "4":
+                                        break;
+                                    case "5":
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+                        default:
+                            System.out.println("Commande inconnue !");
+                            break;
+                    }
+                }
+            }
+        }
     }
 }

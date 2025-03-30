@@ -101,6 +101,6 @@ public enum Capacite {
     @Override
     public String toString() {
         return this.nom + " (" + this.type + ") [" + this.degats + " Dégâts] - [Précision : " + this.precision
-                + "%] (Cout : " + this.cout + " PA)";
+                + "%] (Cout : " + this.cout + " PE)";
     }
 }

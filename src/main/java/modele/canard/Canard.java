@@ -16,8 +16,8 @@ public abstract class Canard {
 
     // ---------- ATTRIBUTS ---------- //
 
-    private static final int NIVEAU_MAX = 100;
-    private static final int MAX_ENERGIE = 100;
+    public static final int NIVEAU_MAX = 100;
+    public static final int MAX_ENERGIE = 100;
 
     private String nom;
     private TypeCanard type;
@@ -136,6 +136,13 @@ public abstract class Canard {
      */
     public Statut getStatut() {
         return this.statut;
+    }
+
+    /*
+     * Retourne le niveau actuel du canard
+     */
+    public int getNiveau() {
+        return this.niveau;
     }
 
     /*
@@ -322,23 +329,27 @@ public abstract class Canard {
      */
     public abstract void utiliserCapaciteSpeciale(Canard canardCible);
 
+    // ---------- METHODES D'AFFICHAGE ---------- //
+
     public void afficherCapacite() {
-        for (Capacite c : this.capacites) {
-            System.out.println(c);
+        for (int i = 0; i < this.capacites.size(); i++) {
+            System.out.println((i + 1) + ". " + this.capacites.get(i));
         }
-        System.out.println(this.capaciteSpeciale);
+        System.out.println("5. " + this.capaciteSpeciale);
     }
 
     @Override
     public String toString() {
-        String canard = this.nom + " (" + this.type + ") [Niveau " + this.niveau + "] : " +
+        String canard = this.nom + " (" + this.type + ") [Niveau " + this.niveau + "] "
+                + "[Energie : " + this.energie + "/" + MAX_ENERGIE + "] : " +
                 "\n - PV : " + this.getPointsDeVie() +
-                "\n - Attaque :" + this.getPointsAttaque() +
+                "\n - Attaque : " + this.getPointsAttaque() +
                 "\n - Vitesse : " + this.getVitesse() +
-                "\n\n Liste des capacités : ";
+                "\nListe des capacités : ";
         for (Capacite c : this.capacites) {
             canard += "\n - " + c;
         }
+        canard += "\n";
         return canard;
     }
 }

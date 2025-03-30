@@ -9,6 +9,8 @@ public enum TypeCanard {
 
     EAU, FEU, GLACE, VENT;
 
+    public static final int NB_TYPE = 4; // Nombre de Types
+
     /**
      * Table des multiplicateurs entre les différents types de canards.
      * Les lignes représentent le type attaquant, et les colonnes le type cible.
